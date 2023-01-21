@@ -1,16 +1,14 @@
 import Comments from './components/comment'
-import Card from './components/card'
+import { Route, Routes } from 'react-router'
+import Home from './components/home/home'
 function App() {
-  
+
   return (
     <div className="App">
-    {/* <Card></Card>
-     */}
-      <Comments>
-
-
-        
-      </Comments>
+      <Routes>
+        <Route path="/replies/:id" element={<Comments />} />
+        <Route path="/" element={<Home />} />
+      </Routes>
     </div>
   )
 }
