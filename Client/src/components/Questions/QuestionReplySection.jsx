@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useCallback, useState } from 'react'
+import React, { useEffect, useContext, useCallback, useState, useRef } from 'react'
 import Quill from 'quill'
 import "quill/dist/quill.snow.css"
 import "./styles.css"
@@ -14,6 +14,9 @@ import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import Drawer from '@mui/material/Drawer';
 import ImageResize from 'quill-image-resize-module-react';
+import Comment from '../comment'
+
+import img from '../../assets/ChatGPT.png'
 
 
 
@@ -25,16 +28,18 @@ const QuestionReplySection = () => {
 
     // let { id } = useParams();
 
-    const [drawerstate, setDrawerstate] = useState(false);
+    const [drawerstate, setDrawerstate] = useState(true);
     const [quill, setQuill] = useState();
+
+    const saveblogwithcardsubmitref = useRef(null);
 
 
     const [questionWithID, setQuestionWithID] = useState(sampledata)
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        console.log('id specific blog is here :- ', questionWithID)
-    }, [questionWithID])
+    //     console.log('id specific blog is here :- ', questionWithID)
+    // }, [questionWithID])
 
 
     const wrapperRef1 = useCallback(wrapper => {
@@ -112,9 +117,9 @@ const QuestionReplySection = () => {
         button.innerHTML = 'Save Draft';
         button.id = 'savedraftbutton'
 
-        // button.onclick = () => {
-        //     saveblogwithcardsubmitref.current.click();
-        // }
+        button.onclick = () => {
+            saveblogwithcardsubmitref.current.click();
+        }
 
         tool.appendChild(button)
 
@@ -130,61 +135,110 @@ const QuestionReplySection = () => {
     }, [])
 
 
+    const showmequill = async () => {
+        console.log("quill content : ", quill.getContents().ops);
+
+
+        // <------------------API point --------------------->
+    }
+
+
 
 
     return (
         <>
 
-            <div className="border-2 border-pink-400 w-[35%] text-center">
+            <div className='flex'>
 
-                <div className="aboutauthor border-2 border-green-600">
-                    <div className="question-title border-2 border-black text-3xl font-semibold text-left p-3">
-                        Delete Item from specific location in list in Python [duplicate]
-                    </div>
 
-                    <div className="question-author px-4 py-4 border-2 border-black flex justify-between">
-                        <div className="author-details border-2 border-pink-400 flex ">
-                            <img src="https://source.unsplash.com/500x300/?web-development" alt="" className='w-10 h-10 rounded-full ' />
-                            <div className="author-name border-2 border-blue-800 w-fit flex items-center justify-center ml-4 font-semibold">
-                                Diane White
+                <section className="Question  border-pink-400 text-center w-[35%] ">
+                    <div>
+
+                        <div className="aboutauthor  border-green-600">
+                            <div className="question-title  border-black text-3xl font-semibold text-left p-3">
+                                Delete Item from specific location in list in Python [duplicate]
+                            </div>
+
+                            <div className="question-author px-4 py-4  border-black flex justify-between">
+                                <div className="author-details  border-pink-400 flex ">
+                                    <img src="https://source.unsplash.com/500x300/?web-development" alt="" className='w-10 h-10 rounded-full ' />
+                                    <div className="author-name  border-blue-800 w-fit flex items-center justify-center ml-4 font-semibold">
+                                        Diane White
+                                    </div>
+                                </div>
+
+                                <div className="LikeShareReply  border-black flex ">
+                                    <button className='mx-2 font-bold text-md transition-all ease-out duration-300  rounded-xl w-fit text-white bg-blue-600 px-3 py-3' onClick={() => { setDrawerstate(!drawerstate) }} >
+                                        Reply <ReplyIcon sx={{ marginLeft: "2px" }} />
+                                    </button>
+
+                                    <div>
+                                        <BottomNavigation
+                                            showLabels
+                                            value={value}
+                                            onChange={(event, newValue) => {
+                                                value == 0 ? setValue(1) : setValue(0);
+                                            }}
+                                            sx={{ width: "fit-content" }}
+                                        >
+                                            <Tooltip title="Like">
+                                                <BottomNavigationAction icon={<FavoriteIcon />} />
+                                            </Tooltip>
+
+
+                                        </BottomNavigation>
+                                    </div>
+
+
+                                </div>
+
                             </div>
                         </div>
 
-                        <div className="LikeShareReply border-2 border-black flex ">
-                            <button className='mx-2 font-bold text-md transition-all ease-out duration-300  rounded-xl w-fit text-white bg-blue-600 px-3 py-3' onClick={() => { setDrawerstate(!drawerstate) }} >
-                                Reply <ReplyIcon sx={{ marginLeft: "2px" }} />
-                            </button>
+                        <div>
+                            <div className='container  border-red-500 w-fit' ref={wrapperRef1} ></div>
+                        </div>
+                    </div>
+                </section>
 
-                            <div>
-                                <BottomNavigation
-                                    showLabels
-                                    value={value}
-                                    onChange={(event, newValue) => {
-                                        value == 0 ? setValue(1) : setValue(0);
-                                    }}
-                                    sx={{ width: "fit-content" }}
-                                >
-                                    <Tooltip title="Like">
-                                        <BottomNavigationAction icon={<FavoriteIcon />} />
-                                    </Tooltip>
+                {/* <------------------------------------------------------Comments on Post section----------------------------------> */}
+
+                <div className='w-full'>
 
 
-                                </BottomNavigation>
+                    <section className="ChatGPTAnswer  border-red-400 p-5 bg-white m-4 rounded-md">
+
+                        <div className="font-bold flex">
+                            <img src={img} alt="image not found" className='w-20 h-12  rounded-full' />
+                            <div className=' border-green-600 '>
+                                <div className="title text-lg text-gray-800 font-bold ">
+                                    ChatGPT Response
+
+                                </div>
+                                <div className="datetime text-sm text-gray-500 mt-1 ">
+                                    12/05/22 2:45 PM
+                                </div>
                             </div>
-
-
                         </div>
 
-                    </div>
+
+
+                        <div className="responsemsg mt-4 font-medium">
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita aliquid molestiae eius sint facilis rem reprehenderit maiores magnam mollitia doloremque ex, magni praesentium at nisi a repellendus delectus incidunt adipisci dolore commodi fugiat atque. Aliquam rem, ipsam, magni possimus vel ea quasi, quo impedit fuga ullam quam ad commodi voluptates maxime nisi velit pariatur quos placeat officiis incidunt maiores neque id harum facere. Dicta perferendis ducimus, repellendus esse deleniti officia, ex, maiores blanditiis temporibus aut assumenda. Repudiandae aspernatur reprehenderit praesentium ex, ducimus voluptatem expedita commodi error porro numquam? Mollitia, nulla accusamus. Minus tempore illum fuga. Impedit delectus a commodi reprehenderit?
+                        </div>
+                    </section>
+
+
+                    <section className="comments  border-green-400 w-full p-1 flex flex-col gap-4">
+                        <Comment />
+                        <Comment />
+                        <Comment />
+                        <Comment />
+                        <Comment />
+                    </section>
                 </div>
 
-                <div>
-                    <div className='container  border-red-500 w-fit' ref={wrapperRef1} ></div>
-                </div>
             </div>
-
-
-
 
 
             {/* <-------------------------------------------------------Drawer------------------------------------------------------> */}
@@ -194,6 +248,8 @@ const QuestionReplySection = () => {
                 onClose={() => setDrawerstate(!drawerstate)}
             >
                 <div className='container  border-red-400 mx-auto' ref={wrapperRef2}></div>
+
+                <div onClick={showmequill} ref={saveblogwithcardsubmitref} className='text-center hidden  border-black rounded-lg mx-auto bg-black text-white py-1 cursor-pointer w-[8.5in]' >Save Draft</div>
 
             </Drawer>
 

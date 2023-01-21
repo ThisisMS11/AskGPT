@@ -18,7 +18,7 @@ body {
     /* margin: 1rem; */
     box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5);
     background-color: white;
-    border: solid 2px red;
+    /* border: solid 2px red; */
     margin-top: 10px;
     border-radius: 8px;
     /* background-color: black; */
@@ -28,10 +28,10 @@ body {
 /* css for the container containing our page */
 
 .container .ql-container {
-    border: none;
+    /* border: none; */
     display: flex;
     justify-content: center;
-    border: solid 2px rgb(60, 0, 255);
+    /* border: solid 2px rgb(60, 0, 255); */
     width: 94%;
     margin: 0;
 }
@@ -47,14 +47,14 @@ body {
     top: 0;
     z-index: 1;
     background-color: #F3F3F3;
-    border: none;
-    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5);
-    border: solid 2px rgb(0, 246, 25);
     /* border: none; */
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5);
+    /* border: solid 2px rgb(0, 246, 25); */
+    border: none;
 }
 
 .container {
-    border: solid 2px green;
+    /* border: solid 2px green; */
     width: 100% !important;
     align-items: center;
     justify-content: center;
@@ -92,7 +92,7 @@ body {
 
 
 #savedraftbutton {
-    /* border: solid 2px red; */
+    border: solid 2px red;
     width: fit-content;
     height: fit-content;
     word-wrap: normal;
