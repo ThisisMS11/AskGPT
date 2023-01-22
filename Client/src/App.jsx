@@ -7,6 +7,7 @@ import QuestionPanelReview from './components/Questions/QuestionPanelReview'
 import QuestionReplySection from './components/Questions/QuestionReplySection'
 
 import ValidationState from './components/context/ValidationState'
+import PostQuestion from './components/Questions/PostQuestion'
 function App() {
 
   return (
@@ -22,6 +23,8 @@ function App() {
           <Route exact path='/reply' element={<QuestionReplySection />}></Route>
 
           <Route path='/signup' element={<SignUp />} />
+          <Route path='/postq' element={<PostQuestion />} />
+
         </Routes>
       </ValidationState>
     </div>

@@ -15,8 +15,10 @@ import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import Drawer from '@mui/material/Drawer';
 import ImageResize from 'quill-image-resize-module-react';
 import Comment from '../comment'
-
+import TextField from '@mui/material/TextField';
 import img from '../../assets/ChatGPT.png'
+import Button from '@mui/material/Button';
+import SendIcon from '@mui/icons-material/Send';
 
 
 
@@ -78,6 +80,14 @@ const QuestionReplySection = () => {
     ]
 
 
+    const [newreply, setNewreply] = useState(null);
+
+    const handleChange = (event) => {
+        setNewreply(event.target.value);
+    };
+
+
+
     const wrapperRef2 = useCallback(wrapper => {
 
         // setLoading(true)
@@ -136,8 +146,9 @@ const QuestionReplySection = () => {
 
 
     const showmequill = async () => {
-        console.log("quill content : ", quill.getContents().ops);
+        // console.log("quill content : ", quill.getContents().ops);
 
+        console.log('newreply => ', newreply);
 
         // <------------------API point --------------------->
     }
@@ -247,11 +258,26 @@ const QuestionReplySection = () => {
                 open={!drawerstate}
                 onClose={() => setDrawerstate(!drawerstate)}
             >
-                <div className='container  border-red-400 mx-auto' ref={wrapperRef2}></div>
+                {/* <div className='container  border-red-400 mx-auto' ref={wrapperRef2}></div>
 
-                <div onClick={showmequill} ref={saveblogwithcardsubmitref} className='text-center hidden  border-black rounded-lg mx-auto bg-black text-white py-1 cursor-pointer w-[8.5in]' >Save Draft</div>
+                                        <div onClick={showmequill} ref={saveblogwithcardsubmitref} className='text-center hidden  border-black rounded-lg mx-auto bg-black text-white py-1 cursor-pointer w-[8.5in]' >Save Draft</div> */}
+                <div className='m-10 flex flex-col gap-4'>
+
+                    <TextField
+                        id="outlined-multiline-static"
+                        label="Your Reply"
+                        multiline
+                        rows={10}
+                        sx={{ width: 400 }}
+                        onChange={handleChange}
+                    />
+                    <Button variant="contained" endIcon={<SendIcon />} onClick={showmequill}>
+                        Send
+                    </Button>
+                </div>
 
             </Drawer>
+
 
 
 

@@ -29,13 +29,21 @@ const Header = () => {
     return (
         <div className={classes.header}>
             <img className={classes.image1} src="https://images.unsplash.com/photo-1508921912186-1d1a45ebb3c1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8cGhvdG98ZW58MHx8MHx8&w=1000&q=80"></img>
-            <div className={classes.search}>
+
+
+            <div className={`${classes.search}`}>
+
+
+
                 <input className={classes.input} placeholder="Search your question"></input>
                 <div className={classes.searchIcon}>
                     <FontAwesomeIcon className={classes.icon} icon={faSearch} />
                 </div>
+
             </div>
+
             <img className={classes.image2} src="https://images.unsplash.com/photo-1508921912186-1d1a45ebb3c1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8cGhvdG98ZW58MHx8MHx8&w=1000&q=80" onClick={handleClick}></img>
+
             <Menu
                 id="demo-positioned-menu"
                 aria-labelledby="demo-positioned-button"
