@@ -19,14 +19,10 @@ exports.login = asyncHandler(async (req, res, next) => {
     let user = await User.findOne({ email: req.body.email }).select('+password')
 
     if (!user) {
-        user = await User.findOne({ unverifiedEmail: req.body.email }).select('+password')
 
-        if (user) {
-            return next(new errorResponse('Please verify your email', 401));
-        }
-        else {
-            return next(new errorResponse('Invalid Input', 400));
-        }
+
+        return next(new errorResponse('Invalid Input', 400));
+
     }
 
     // if (!user.isVerified) {

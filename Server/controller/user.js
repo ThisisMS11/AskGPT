@@ -4,8 +4,6 @@ const asyncHandler = require('../middleware/asyncHandler')
 const cloudinary = require('../utils/cloudinary');
 
 exports.getProfile = asyncHandler(async (req, res, next) => {
-    const followingLength = req.user.following.length;
-    const followersLength = req.user.followers.length;
 
     res.status(200).send({ success: true, data: { user: req.user } })
 })

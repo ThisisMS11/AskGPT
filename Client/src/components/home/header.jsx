@@ -5,8 +5,12 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { useState } from 'react';
 import React from 'react';
+import axios from 'axios'
+import { useAuth } from '../context/auth'
+import { useNavigate } from 'react-router';
 
 const Header = () => {
+    const navigate = useNavigate();
     // const [open, setOpen] = useState(false);
 
     // const handleClose = () => {
@@ -16,15 +20,27 @@ const Header = () => {
     // const handleClick = () => {
     //     setOpen(!open);
     // }
-
+    const auth = useAuth();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
+    const handleClose1 = () => {
+        setAnchorEl(null);
+        navigate('/panel')
+    };
+
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    const handleClose2 = () => {
+        localStorage.setItem('token', null);
+        auth.setUser(null);
+        setAnchorEl(null)
+        navigate('/')
+    }
 
     return (
         <div className={classes.header}>
@@ -51,8 +67,8 @@ const Header = () => {
                     horizontal: 'left',
                 }}
             >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>Logout</MenuItem>
+                <MenuItem onClick={handleClose1}>Profile</MenuItem>
+                {auth.user && <MenuItem onClick={handleClose2}>Logout</MenuItem>}
             </Menu>
         </div>
     )
