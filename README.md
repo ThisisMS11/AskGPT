@@ -7,8 +7,20 @@ A web application to connect programmers to share their issue and get an efficie
 3. Get best solution best upon your query 
 
 # Take a look 
+# Home Page
+![1](https://user-images.githubusercontent.com/108869784/213903201-fb0eee2a-e121-4c16-ad8e-3a1319f373d4.png)
 
-![Screenshot (128)](https://user-images.githubusercontent.com/108869784/213880663-e80783be-856e-4370-b2ba-8c1c9f7d4cd4.png)
+# Text Editor implemented for question and reply post
+![2](https://user-images.githubusercontent.com/108869784/213903209-927e5eb8-0d93-4cf8-86d0-88aa25c8ee28.png)
+
+# Solution to queries along with [Chat GPT](https://openai.com/blog/chatgpt/) answer
+![3](https://user-images.githubusercontent.com/108869784/213903214-685b25f4-c924-4362-85fa-d7f91305024b.png)
+
+# Send your solution 
+![4](https://user-images.githubusercontent.com/108869784/213903220-6b1654be-0f30-496e-bee7-c769017582f3.png)
+
+# Question Review Panel
+![5](https://user-images.githubusercontent.com/108869784/213903222-fb74435c-f7bf-4d21-9463-767e5361eb31.png)
 
 <!-- # Guidelines 
 - [Tech stack](#Tech-stack)
