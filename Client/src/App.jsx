@@ -14,6 +14,7 @@ import axios from 'axios'
 import { useLocation, useNavigate } from 'react-router'
 
 import ValidationState from './components/context/ValidationState'
+import PostQuestion from './components/Questions/PostQuestion'
 function App() {
   const auth = useAuth();
   const location = useLocation();
@@ -61,6 +62,8 @@ function App() {
           <Route exact path='/reply' element={<Loading loading={loading}><AuthrequireLogin><QuestionReplySection /></AuthrequireLogin></Loading>}></Route>
 
           <Route path='/signup' element={<SignUp />} />
+          <Route path='/postq' element={<PostQuestion />} />
+
         </Routes>
 
       </ValidationState>

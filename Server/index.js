@@ -30,8 +30,10 @@ app.use(xss());
 app.use(hpp())
 
 app.use(mongoSanitize());
-// const cai = require('./Routers/apiRouter')
-// app.use('/quistion', cai);
+
+const cai = require('./Routers/apiRouter')
+app.use('/question', cai);
+
 
 app.use(morgan('dev'));
 app.use(express.json());
