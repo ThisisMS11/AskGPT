@@ -1,15 +1,15 @@
 import { Avatar, Box, List, ListItem, ListItemAvatar, ListItemText, Typography, Button, Checkbox } from '@mui/material'
 import React from 'react'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'; import FavoriteIcon from '@mui/icons-material/Favorite';
-function comment() {
+function comment({ author, message, time }) {
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", boxShadow: "1",padding:'4px' ,borderRadius:'4px', marginLeft: "16px", bgcolor: 'white', boxShadow: '0 0 5px 0 rgba(0, 0, 0, 0.5)' }}>
+    <Box sx={{ display: "flex", flexDirection: "column", boxShadow: "1", padding: '4px', borderRadius: '4px', marginLeft: "16px", bgcolor: 'white', boxShadow: '0 0 5px 0 rgba(0, 0, 0, 0.5)' }}>
       <ListItem alignItems="flex-start">
         <ListItemAvatar>
           <Avatar alt="Cindy Baker" src="https://img.freepik.com/premium-vector/flat-winter-season-celebration-background_23-2149895776.jpg?w=900" />
         </ListItemAvatar>
         <ListItemText
-          primary="Name"
+          primary={author}
           secondary={
             <React.Fragment>
               <Typography
@@ -18,7 +18,7 @@ function comment() {
                 variant="body2"
                 color="text.primary"
               >
-                DATE
+                {time}
               </Typography>
               {' — TIME'}
             </React.Fragment>
@@ -27,7 +27,8 @@ function comment() {
 
       </ListItem>
       <Typography variant="p" color="initial" sx={{ marginLeft: '1rem' }}>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere eius dolor magnam natus optio a, similique, beatae labore, veniam nemo saepe! Magnam, nam! Explicabo fugiat reiciendis, deleniti harum ullam magnam?
+        {/* Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere eius dolor magnam natus optio a, similique, beatae labore, veniam nemo saepe! Magnam, nam! Explicabo fugiat reiciendis, deleniti harum ullam magnam? */}
+        {message}
       </Typography>
       <List sx={{ display: 'flex', justifyContent: "space-between", paddingX: "12px" }}>
         <Button variant="text" color="primary">

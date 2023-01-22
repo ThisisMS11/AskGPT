@@ -9,7 +9,7 @@ import ShareIcon from '@mui/icons-material/Share';
 import Tooltip from '@mui/material/Tooltip'
 import IconButton from '@mui/material/IconButton';
 import ReplyIcon from '@mui/icons-material/Reply';
-import { sampledata } from './sampledata';
+import { sampledata, replies } from './sampledata';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import Drawer from '@mui/material/Drawer';
@@ -19,8 +19,7 @@ import TextField from '@mui/material/TextField';
 import img from '../../assets/ChatGPT.png'
 import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
-
-
+import axios from 'axios';
 
 const QuestionReplySection = () => {
 
@@ -38,10 +37,7 @@ const QuestionReplySection = () => {
 
     const [questionWithID, setQuestionWithID] = useState(sampledata)
 
-    // useEffect(() => {
-
-    //     console.log('id specific blog is here :- ', questionWithID)
-    // }, [questionWithID])
+    const [mainquestion, setMainquestion] = useState(`What is React?`)
 
 
     const wrapperRef1 = useCallback(wrapper => {
@@ -58,7 +54,7 @@ const QuestionReplySection = () => {
                 toolbar: null   //Experience 2.0
             }
         })
-        console.log(questionWithID);
+        // console.log(questionWithID);
         q.setContents(questionWithID)
     }, [])
 
@@ -80,7 +76,7 @@ const QuestionReplySection = () => {
     ]
 
 
-    const [newreply, setNewreply] = useState(null);
+    const [newreply, setNewreply] = useState('');
 
     const handleChange = (event) => {
         setNewreply(event.target.value);
@@ -150,8 +146,57 @@ const QuestionReplySection = () => {
 
         console.log('newreply => ', newreply);
 
+        const currentTime = new Date();
+        const localtime = currentTime.toLocaleString();
+
+        const freshreply = {
+            "name": "Pratham",
+            "message": newreply,
+            "time": localtime
+        }
+
+        setDrawerstate(!drawerstate);
+
+        replies.push(freshreply);
+
         // <------------------API point --------------------->
     }
+
+
+    const [chatGPT, setChatGPT] = useState(null);
+
+    useEffect(() => {
+
+        async function call() {
+            await axios.post('http://localhost:4001/question/getAns', { "question": mainquestion })
+                .then(function (response) {
+                    console.log(response);
+                    setChatGPT(response.data);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+
+
+            //     await fetch(`http://localhost:4001/question/getAns`, {
+            //         method: 'POST',
+            //         headers: {
+            //             'Content-Type': 'application/json',
+            //         },
+            //         body: JSON.stringify(})
+
+            // }).then((response) => response.json())
+            // .then((resjson) => {
+            //     console.log(resjson);
+
+            // }).catch((err) => {
+            //     console.log("Upation document error => ", err)
+            // });
+        }
+
+        call();
+    }, [replies])
+
 
 
 
@@ -223,7 +268,7 @@ const QuestionReplySection = () => {
                             <img src={img} alt="image not found" className='w-20 h-12  rounded-full' />
                             <div className=' border-green-600 '>
                                 <div className="title text-lg text-gray-800 font-bold ">
-                                    ChatGPT Response
+                                    ChatGPT
 
                                 </div>
                                 <div className="datetime text-sm text-gray-500 mt-1 ">
@@ -235,17 +280,19 @@ const QuestionReplySection = () => {
 
 
                         <div className="responsemsg mt-4 font-medium">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita aliquid molestiae eius sint facilis rem reprehenderit maiores magnam mollitia doloremque ex, magni praesentium at nisi a repellendus delectus incidunt adipisci dolore commodi fugiat atque. Aliquam rem, ipsam, magni possimus vel ea quasi, quo impedit fuga ullam quam ad commodi voluptates maxime nisi velit pariatur quos placeat officiis incidunt maiores neque id harum facere. Dicta perferendis ducimus, repellendus esse deleniti officia, ex, maiores blanditiis temporibus aut assumenda. Repudiandae aspernatur reprehenderit praesentium ex, ducimus voluptatem expedita commodi error porro numquam? Mollitia, nulla accusamus. Minus tempore illum fuga. Impedit delectus a commodi reprehenderit?
+                            {/* Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita aliquid molestiae eius sint facilis rem reprehenderit maiores magnam mollitia doloremque ex, magni praesentium at nisi a repellendus delectus incidunt adipisci dolore commodi fugiat atque. Aliquam rem, ipsam, magni possimus vel ea quasi, quo impedit fuga ullam quam ad commodi voluptates maxime nisi velit pariatur quos placeat officiis incidunt maiores neque id harum facere. Dicta perferendis ducimus, repellendus esse deleniti officia, ex, maiores blanditiis temporibus aut assumenda. Repudiandae aspernatur reprehenderit praesentium ex, ducimus voluptatem expedita commodi error porro numquam? Mollitia, nulla accusamus. Minus tempore illum fuga. Impedit delectus a commodi reprehenderit? */}
+
+                            {chatGPT}
                         </div>
                     </section>
 
 
                     <section className="comments  border-green-400 w-full p-1 flex flex-col gap-4">
-                        <Comment />
-                        <Comment />
-                        <Comment />
-                        <Comment />
-                        <Comment />
+                        {
+                            replies.map((e) => {
+                                return <Comment author={e.name} message={e.message} time={e.time} />
+                            })
+                        }
                     </section>
                 </div>
 

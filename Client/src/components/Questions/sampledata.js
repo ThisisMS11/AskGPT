@@ -140,4 +140,13 @@ const sampledata = [
     }
 ]
 
-export { sampledata };
+
+const replies = [
+    {
+        "name": "Mohit Saini",
+        "message": "en years ago, I was just starting out in my career as a developer. Back then, I was using subversion for my version control—then I came across Git. I remember how thrilled I was to find that Git worked way better than subversion. Subversion requires a workaround just to have branches. In Git, branching is a first-class citizen: explicitly available without your having to use weird workarounds. Merging code is a lot smoother in Git as well. ",
+        "time": "22/10/23"
+    },
+]
+
+export { sampledata, replies };

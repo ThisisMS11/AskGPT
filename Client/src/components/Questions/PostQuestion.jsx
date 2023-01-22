@@ -5,6 +5,9 @@ import "./styles.css"
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import ImageResize from 'quill-image-resize-module-react';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import SendIcon from '@mui/icons-material/Send';
 
 
 import { useNavigate } from 'react-router-dom'
@@ -15,6 +18,12 @@ const PostQuestion = () => {
 
   const [quill, setQuill] = useState();
   const saveblogwithcardsubmitref = useRef(null);
+
+  const [newreply, setNewreply] = useState(null);
+
+  const handleChange = (event) => {
+    setNewreply(event.target.value);
+  };
 
 
   // quill text editor
@@ -68,8 +77,9 @@ const PostQuestion = () => {
 
     // Creating save Draft button in toolbar.
     const button = document.createElement('button');
-    button.innerHTML = 'Save Draft';
+    button.innerHTML = 'Post Question';
     button.id = 'savedraftbutton'
+    button.style.border = 'none'
 
     button.onclick = () => {
       saveblogwithcardsubmitref.current.click();
@@ -84,14 +94,31 @@ const PostQuestion = () => {
   }, [])
 
 
-const showmequill = async () => {p
+  const showmequill = async () => {
     console.log("quill content : ", quill.getContents().ops);
+    console.log(newreply)
   }
 
   return (
     <>
       <Header />
+
+
+      <div className=' border-black flex items-center justify-around'>
+
+        <TextField
+          id="outlined-multiline-static"
+          label="Type Your Question here"
+          multiline
+          rows={2}
+          sx={{ width: '75%', margin: '10px auto' }}
+          onChange={handleChange}
+        />
+
+      </div>
+
       <div className='container  border-red-400 mx-auto' ref={wrapperRef2}></div>
+
 
       <div onClick={showmequill} ref={saveblogwithcardsubmitref} className='text-center hidden  border-black rounded-lg mx-auto bg-black text-white py-1 cursor-pointer w-[8.5in]' >Save Draft</div>
     </>

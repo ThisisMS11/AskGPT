@@ -44,50 +44,52 @@ const rows = [
 
 export default function QuestionPanelReview() {
     return (
-        <TableContainer component={Paper} sx={{ width: '80%', marginX: 'auto' }}>
-            <Table sx={{ minWidth: 650 }} aria-label="caption table">
-                <caption>A basic table example with a caption</caption>
-                <TableHead>
-                    <TableRow>
-                        <TableCell sx={{ fontSize: 25, opacity: '0.8' }}>Topic</TableCell>
-                        <TableCell align="right" sx={{ fontSize: 25, opacity: '0.8' }}>Users</TableCell>
-                        <TableCell align="right" sx={{ fontSize: 25, opacity: '0.8' }}>Replies</TableCell>
-                        <TableCell align="right" sx={{ fontSize: 25, opacity: '0.8' }}>Views</TableCell>
-                    </TableRow>
-                </TableHead>
-
-                <TableBody>
-                    {rows.map((row) => (
-                        <TableRow key={row.Question}>
-                            <TableCell component="th" scope="row" sx={{ fontSize: 17 }}>
-                                <Typography fontWeight="xl">
-                                    {row.Question}
-
-                                </Typography>
-                            </TableCell>
-                            <TableCell align="right" sx={{ display: 'flex' }}>
-                                {row.ReplyUsersInfo.map((e) => {
-                                    return <img src={e} alt="image not found" className='w-10 h-10 rounded-full mx-1' />
-                                })}
-                            </TableCell>
-                            <TableCell align="right">
-                                <Typography fontWeight="xl">
-                                    {row.NoReplyUsers}
-
-                                </Typography>
-
-                            </TableCell>
-                            <TableCell align="right">
-                                <Typography fontWeight="xl">
-                                    {row.NoViews}
-
-
-                                </Typography>
-                            </TableCell>
+        <>
+            <TableContainer component={Paper} sx={{ width: '80%', marginX: 'auto' }}>
+                <Table sx={{ minWidth: 650 }} aria-label="caption table">
+                    <caption>A basic table example with a caption</caption>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell sx={{ fontSize: 25, opacity: '0.8' }}>Topic</TableCell>
+                            <TableCell align="right" sx={{ fontSize: 25, opacity: '0.8' }}>Users</TableCell>
+                            <TableCell align="right" sx={{ fontSize: 25, opacity: '0.8' }}>Replies</TableCell>
+                            <TableCell align="right" sx={{ fontSize: 25, opacity: '0.8' }}>Views</TableCell>
                         </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
+                    </TableHead>
+
+                    <TableBody>
+                        {rows.map((row) => (
+                            <TableRow key={row.Question}>
+                                <TableCell component="th" scope="row" sx={{ fontSize: 17 }}>
+                                    <Typography fontWeight="xl">
+                                        {row.Question}
+
+                                    </Typography>
+                                </TableCell>
+                                <TableCell align="right" sx={{ display: 'flex' }}>
+                                    {row.ReplyUsersInfo.map((e) => {
+                                        return <img src={e} alt="image not found" className='w-10 h-10 rounded-full mx-1' />
+                                    })}
+                                </TableCell>
+                                <TableCell align="right">
+                                    <Typography fontWeight="xl">
+                                        {row.NoReplyUsers}
+
+                                    </Typography>
+
+                                </TableCell>
+                                <TableCell align="right">
+                                    <Typography fontWeight="xl">
+                                        {row.NoViews}
+
+
+                                    </Typography>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </>
     );
 }
