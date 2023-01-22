@@ -1,33 +1,55 @@
 import { useState } from 'react'
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/auth'
+import axios from 'axios'
+import { useLocation } from 'react-router-dom'
 
 const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const location = useLocation();
 
+  const redirectPath = location.state?.path || '/'
+  const [password, setPassword] = useState('')
+  const auth = useAuth();
   async function loginUser(event) {
     event.preventDefault()
     const userDetails = { email, password }
     console.log(userDetails);
-    // const response = await fetch('http://localhost:1337/api/auth/login', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify(userDetails),
-    // })
+    const response = await fetch('http://localhost:4000/api/v1/user/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userDetails),
+    })
 
-    // const data = await response.json()
+    const data = await response.json()
+    console.log(data)
+    if (data.token) {
+      localStorage.setItem('token', data.token)
+      alert('Login successful')
+      try {
+        console.log(data)
+        const res = await axios.get('http://localhost:4000/api/v1/user', {
+          method: 'GET',
+          headers: {
+            // "access-control-allow-origin": "*",
+            // 'Content-Type': 'application/JSON',
+            'authorisation': `Bearer ${data.token}`
+          }
 
-    // if (!data.user) {
-    //   localStorage.setItem('token', data.user)
-    //   alert('Login successful')
-    //   navigate('/dashboard');
-    // } else {
-    //   alert('Please check your username and password')
-    // }
+        })
+        auth.setUser(res.data.data.user)
+        navigate(redirectPath)
+      }
+      catch (err) {
+        console.log(err);
+      }
+    } else {
+      alert('Please check your username and password')
+    }
   }
 
   return (
@@ -89,7 +111,7 @@ const Login = () => {
                   <span className="text-md font-light mt-2 pt-1 mb-0 flex justify-center items-center  border-white p-4 ">
                     <div className='mx-4  border-white'>New User?</div>
                     <a
-                      href="/si"
+                      href="/signup"
                       className="text-blue-500 underline hover:text-blue-700 focus:text-blue-700 transition duration-200 ease-in-out mr-6  border-white"
                     > Signup</a
                     >

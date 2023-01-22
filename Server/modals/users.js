@@ -52,8 +52,8 @@ const userSchema = new mongoose.Schema({
     //     type: Boolean,
     //     default: false
     // },
-    verificationToken: String,
-    verificationTokenExpire: Date,
+    // verificationToken: String,
+    // verificationTokenExpire: Date,
     resetPasswordToken: String,
     resetPasswordExpire: Date,
     createdAt: {
@@ -89,7 +89,7 @@ userSchema.methods.matchPassword = function (password) {
 }
 
 userSchema.methods.getSignedJwtToken = function () {
-    return jwt.sign({ id: this._id, password: this.password }, process.env.JWT_SECRET, {
+    return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
         expiresIn: process.env.JWT_EXPIRE
     });
 }
@@ -101,11 +101,11 @@ userSchema.methods.getResetPasswordToken = function () {
     return resetToken;
 }
 
-userSchema.methods.getVerificationToken = function () {
-    const verificationToken = crypto.randomBytes(20).toString('hex');
-    this.verificationToken = crypto.createHash('sha256').update(verificationToken).digest('hex');
-    this.verificationTokenExpire = Date.now() + 10 * 60 * 1000;
-    return verificationToken;
-}
+// userSchema.methods.getVerificationToken = function () {
+//     const verificationToken = crypto.randomBytes(20).toString('hex');
+//     this.verificationToken = crypto.createHash('sha256').update(verificationToken).digest('hex');
+//     this.verificationTokenExpire = Date.now() + 10 * 60 * 1000;
+//     return verificationToken;
+// }
 
 module.exports = mongoose.model('Users', userSchema);

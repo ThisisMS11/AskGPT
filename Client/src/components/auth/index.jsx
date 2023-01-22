@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
-import validationContext from '../context/ValidationContext'
+import validationContext from '../context/validationContext'
+import axios from 'axios'
+import { useAuth } from '../context/auth'
 
 // !Import React FilePond
 import { FilePond, registerPlugin } from 'react-filepond'
@@ -26,7 +28,7 @@ registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview, F
 
 const Register = () => {
   const navigate = useNavigate();
-
+  const auth = useAuth();
   const [newuserinfo, setNewuserinfo] = useState({ username: "", email: "", password: "", confirmpassword: "", image: "" });
 
   const [stateSignUp, setStateSignUp] = useState(true);
@@ -42,18 +44,33 @@ const Register = () => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({name:newuserinfo.username,email:newuserinfo.email,password:newuserinfo.password}),
+
+      body: JSON.stringify({name:newuserinfo.username,email:newuserinfo.email,password:newuserinfo.password,}),
+
     })
 
     const data = await response.json()
-    console.log(data.status)
+    console.log(data)
 
-    if (data.status === 'ok') {
+    if (data.status === true) {
       // setEmail('')
       // setName('')
       // setPassword('')
-      console.log("User added", data.user)
-      navigate("/login")
+      try {
+        const res = await axios.get('http://localhost:4000/api/v1/user/', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/JSON',
+            'authorisation': `Bearer ${data.token}`
+          }
+
+        })
+        auth.setUser(res.data.data.user)
+        navigate('/')
+      }
+      catch (err) {
+        console.log(err);
+      }
     }
     else {
       console.log("Some error ocurred")
@@ -135,7 +152,7 @@ const Register = () => {
       setStateSignUp(true);
     }
 
-  }, [newuserinfo.username, newuserinfo.email, newuserinfo.password,stateSignUp, newuserinfo.confirmpassword])
+  }, [newuserinfo.username, newuserinfo.email, newuserinfo.password, stateSignUp, newuserinfo.confirmpassword])
 
 
 
