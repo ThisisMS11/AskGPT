@@ -16,22 +16,24 @@ const xss = require('xss-clean');
 const cors = require('cors');
 const hpp = require('hpp');
 const fileUpload = require('express-fileupload');
-const bodyParser = require("body-parser");
+// const bodyParser = require("body-parser");
 
 
 mongoose.set('strictQuery', true);
 dotenv.config({ path: './config/config.env' })
 
 const app = express();
-
-app.use(bodyParser.json());
+app.use(cors());
+// app.use(bodyParser.json());
 app.use(helmet());
 app.use(xss());
 app.use(hpp())
-app.use(cors());
+
 app.use(mongoSanitize());
+
 const cai = require('./Routers/apiRouter')
 app.use('/question', cai);
+
 
 app.use(morgan('dev'));
 app.use(express.json());
@@ -41,7 +43,7 @@ app.use(fileUpload({ useTempFiles: true }));
 app.use('/api/v1/user', user);
 app.use('/api/v1/posts', post);
 app.use('/api/v1/all_posts', allPosts);
-app.use('/api/v1/adminusers', users);
+// app.use('/api/v1/adminusers', users);
 app.use(errorResponse)
 connectDB();
 
