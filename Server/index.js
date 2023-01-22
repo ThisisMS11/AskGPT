@@ -18,9 +18,9 @@ const hpp = require('hpp');
 const fileUpload = require('express-fileupload');
 const bodyParser = require("body-parser");
 
-
 mongoose.set('strictQuery', true);
 dotenv.config({ path: './config/config.env' })
+dotenv.config({ path: '.env' })
 
 const app = express();
 

@@ -12,8 +12,15 @@ import {
   ListItemAvatar,
   ListItemText,
 } from "@mui/material";
+import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+export default function ImgMediaCard(props) {
+   const navigate = useNavigate();
+  const clickHandler = () => { 
+     navigate(`/reply/${props.id}`);
+  }
 
-export default function ImgMediaCard() {
+
   return (
     <Card
       sx={{
@@ -29,18 +36,19 @@ export default function ImgMediaCard() {
         height="140"
         image="https://img.freepik.com/premium-vector/flat-winter-season-celebration-background_23-2149895776.jpg?w=900"
         sx={{ borderRadius: "1rem" }}
+        onClick = {clickHandler}
       />
       <CardContent>
         <Typography sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Typography sx={{ color: "gray" }}>Topics</Typography>
-          <Typography sx={{ color: "gray" }}>Last Activity</Typography>
+          <Typography sx={{ color: "gray" }}> comments</Typography>
+          <Typography sx={{ color: "gray" }}> lastActivity</Typography>
         </Typography>
         <Typography sx={{ display: "flex", justifyContent: "space-between" }}>
           <Typography variant="h6" color="primary">
-            120
+           {props.comments}
           </Typography>
           <Typography variant="h6" color="primary">
-            Today,23:57
+            {props.date}
           </Typography>
           {/* <Typography variant="h1" color="initial"></Typography> */}
         </Typography>
@@ -48,12 +56,12 @@ export default function ImgMediaCard() {
       <List >
         <ListItem alignItems="flex-start">
           <ListItemAvatar>
-                      <Avatar alt="Cindy Baker" src=
-                          "https://img.freepik.com/premium-vector/flat-winter-season-celebration-background_23-2149895776.jpg?w=900"
-                      />
+            <Avatar alt="Cindy Baker" src={props.userimage} />
+            
+                         
           </ListItemAvatar>
           <ListItemText
-            primary="Oui Oui"
+            primary={props.username}
             secondary={
               <React.Fragment>
                 <Typography
@@ -62,9 +70,9 @@ export default function ImgMediaCard() {
                   variant="body2"
                   color="text.primary"
                 >
-                  Sandra Adams
+                 {props.username}
                 </Typography>
-                {" — Do you have Paris recommendations? Have you ever…"}
+               :- {props.quistion}
               </React.Fragment>
             }
           />

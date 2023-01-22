@@ -7,7 +7,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/joy/Typography';
 import Paper from '@mui/material/Paper';
-
+import Header from '../home/header';
 function createData(Question, ReplyUsersInfo, NoReplyUsers, NoViews) {
     return { Question, ReplyUsersInfo, NoReplyUsers, NoViews };
 }
@@ -43,8 +43,9 @@ const rows = [
 ];
 
 export default function QuestionPanelReview() {
-    return (
-        <TableContainer component={Paper} sx={{ width: '80%', marginX: 'auto' }}>
+    return (<>
+        <Header />
+        <TableContainer component={Paper} sx={{ width: '80%', marginX: 'auto', marginTop :"2rem" }}>
             <Table sx={{ minWidth: 650 }} aria-label="caption table">
                 <caption>A basic table example with a caption</caption>
                 <TableHead>
@@ -89,5 +90,6 @@ export default function QuestionPanelReview() {
                 </TableBody>
             </Table>
         </TableContainer>
+                    </>
     );
 }

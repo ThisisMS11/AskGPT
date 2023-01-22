@@ -18,9 +18,9 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path='/login' element={<Login />} />
 
-          <Route exact path='/panel' element={<QuestionPanelReview />}></Route>
-          <Route exact path='/reply' element={<QuestionReplySection />}></Route>
-
+          <Route exact path='/panel/:userid' element={<QuestionPanelReview />}></Route>
+          <Route exact path='/reply/:id' element={<QuestionReplySection />}></Route>
+{/* <Route path='/Profile/:id' element={<Profile />}></Route> */}
           <Route path='/signup' element={<SignUp />} />
         </Routes>
       </ValidationState>
