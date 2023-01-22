@@ -31,7 +31,7 @@ app.use(hpp())
 app.use(cors());
 app.use(mongoSanitize());
 const cai = require('./Routers/apiRouter')
-app.use('/quistion', cai);
+app.use('/question', cai);
 
 app.use(morgan('dev'));
 app.use(express.json());
