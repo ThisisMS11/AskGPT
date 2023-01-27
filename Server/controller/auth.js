@@ -16,17 +16,11 @@ exports.login = asyncHandler(async (req, res, next) => {
         return next(new errorResponse('Please provide an email and password', 400));
     }
 
+    // ! searching for user with req.body parameters
     let user = await User.findOne({ email: req.body.email }).select('+password')
 
     if (!user) {
-        user = await User.findOne({ unverifiedEmail: req.body.email }).select('+password')
-
-        if (user) {
-            return next(new errorResponse('Please verify your email', 401));
-        }
-        else {
-            return next(new errorResponse('Invalid Input', 400));
-        }
+        return next(new errorResponse('Invalid Input', 400));
     }
 
     // if (!user.isVerified) {
@@ -39,8 +33,11 @@ exports.login = asyncHandler(async (req, res, next) => {
         return next(new errorResponse('Invalid Input', 404));
     }
 
+    // !this will set the token cookie and send back the response status and token generated
     sendTokenResponse(user, 200, res)
 })
+
+
 
 exports.register = asyncHandler(async (req, res, next) => {
     const { name, email, password, role } = req.body;
@@ -115,7 +112,11 @@ exports.verifyEmail = asyncHandler(async (req, res, next) => {
 
 })
 
+//! this function takes the user information (if found) / created and generates a token with some expiry time and sets token cookie to that token and populate the response object with status and token to send back to client. 
+
 const sendTokenResponse = (user, statusCode, res) => {
+
+    //! this getSignedJwtToken is in users model where it signs the token with the user.id ,jwt secret and the expiry time
     const token = user.getSignedJwtToken();
 
     const options = {
@@ -127,6 +128,11 @@ const sendTokenResponse = (user, statusCode, res) => {
 
     res.status(statusCode).cookie('token', token, options).send({ status: true, token: token });
 }
+
+
+
+
+
 
 exports.updatePassword = asyncHandler(async (req, res, next) => {
     const user = await User.findOne({ email: req.user.email }).select('+password');
@@ -246,6 +252,8 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
 })
 
 exports.logout = asyncHandler(async (req, res, next) => {
+
+    // ! Setting the token to none on user logging out.
     res.cookie('token', 'none', {
         expires: new Date(Date.now() + 10 * 1000),
         httpOnly: true

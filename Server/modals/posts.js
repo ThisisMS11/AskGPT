@@ -28,12 +28,14 @@ const postSchema = new mongoose.Schema({
 }
 )
 
+// !to delete all the comments of the corresponding deleted post.
 postSchema.pre('remove', async function (next) {
     await this.model('Comments').deleteMany({ post: this._id });
-
+ 
     next();
 })
 
+//! to populate the comments
 postSchema.virtual('comments', {
     ref: 'Comments',
     localField: '_id',

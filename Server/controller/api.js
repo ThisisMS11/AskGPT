@@ -14,7 +14,7 @@ exports.chai = async (req, res) => {
     const result = await openai.createCompletion({
       model: "text-davinci-003",
       prompt: question,
-      max_tokens: 4000,
+      max_tokens: 4001,
       temperature: 0,
     });
     if (result) {

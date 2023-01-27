@@ -1,33 +1,73 @@
 import { useState } from 'react'
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/auth'
+import axios from 'axios'
+import { useLocation } from 'react-router-dom'
 
 const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('')
+  const location = useLocation();
+
+  const redirectPath = location.state?.path || '/'
+
   const [password, setPassword] = useState('')
+
+
+  // useAuth is a user defined react hook to set the userinfo to a usestate available globally throughout our app.
+  const auth = useAuth();
 
   async function loginUser(event) {
     event.preventDefault()
     const userDetails = { email, password }
-    console.log(userDetails);
-    // const response = await fetch('http://localhost:1337/api/auth/login', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify(userDetails),
-    // })
 
-    // const data = await response.json()
+    console.log('Input fields values => ', userDetails);;
 
-    // if (!data.user) {
-    //   localStorage.setItem('token', data.user)
-    //   alert('Login successful')
-    //   navigate('/dashboard');
-    // } else {
-    //   alert('Please check your username and password')
-    // }
+
+    //! calling the login api here 
+    const response = await fetch('http://localhost:4001/api/v1/user/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userDetails),
+    })
+      .then((response) => response.json())
+      .then(async (data) => {
+        //! data is an object with token and status(true/false);
+        console.log('loggin response => ', data);
+
+        if (data.status && data.token) {
+
+          alert('login Successful');
+
+          localStorage.setItem('token', data.token)
+
+          try {
+            const res = await axios.get('http://localhost:4001/api/v1/user', {
+              method: 'GET',
+              headers: {
+                // "access-control-allow-origin": "*",
+                // 'Content-Type': 'application/JSON',
+                'authorisation': `Bearer ${data.token}`
+              }
+
+            })
+            console.log('fetching user information using token like this :', res)
+
+            //! setting the userinfo to context usestate to use globally anywhere .
+            auth.setUser(res.data.data.user)
+            navigate(redirectPath)
+          } catch (error) {
+            console.log(error)
+          }
+        }
+        else {
+          alert('please login with good credentials');
+        }
+      })
+
   }
 
   return (
@@ -89,7 +129,7 @@ const Login = () => {
                   <span className="text-md font-light mt-2 pt-1 mb-0 flex justify-center items-center  border-white p-4 ">
                     <div className='mx-4  border-white'>New User?</div>
                     <a
-                      href="/si"
+                      href="/signup"
                       className="text-blue-500 underline hover:text-blue-700 focus:text-blue-700 transition duration-200 ease-in-out mr-6  border-white"
                     > Signup</a
                     >

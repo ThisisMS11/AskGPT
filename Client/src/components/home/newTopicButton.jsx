@@ -3,6 +3,9 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import classes from "./newTopicButton.module.scss";
 import { useNavigate } from "react-router-dom";
 
+import { Navigate } from "react-router";
+//import { Navigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 const NewQuestionButton = () => {
 
     const navigate = useNavigate();

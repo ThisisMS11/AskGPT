@@ -7,7 +7,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/joy/Typography';
 import Paper from '@mui/material/Paper';
-
+import Header from '../home/header';
 function createData(Question, ReplyUsersInfo, NoReplyUsers, NoViews) {
     return { Question, ReplyUsersInfo, NoReplyUsers, NoViews };
 }
@@ -43,53 +43,55 @@ const rows = [
 ];
 
 export default function QuestionPanelReview() {
-    return (
-        <>
-            <TableContainer component={Paper} sx={{ width: '80%', marginX: 'auto' }}>
-                <Table sx={{ minWidth: 650 }} aria-label="caption table">
-                    <caption>A basic table example with a caption</caption>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell sx={{ fontSize: 25, opacity: '0.8' }}>Topic</TableCell>
-                            <TableCell align="right" sx={{ fontSize: 25, opacity: '0.8' }}>Users</TableCell>
-                            <TableCell align="right" sx={{ fontSize: 25, opacity: '0.8' }}>Replies</TableCell>
-                            <TableCell align="right" sx={{ fontSize: 25, opacity: '0.8' }}>Views</TableCell>
+
+
+    return (<>
+        <Header />
+        <TableContainer component={Paper} sx={{ width: '80%', marginX: 'auto', marginTop: "2rem" }}>
+            <Table sx={{ minWidth: 650 }} aria-label="caption table">
+                <caption>A basic table example with a caption</caption>
+                <TableHead>
+                    <TableRow>
+                        <TableCell sx={{ fontSize: 25, opacity: '0.8' }}>Topic</TableCell>
+                        <TableCell align="right" sx={{ fontSize: 25, opacity: '0.8' }}>Users</TableCell>
+                        <TableCell align="right" sx={{ fontSize: 25, opacity: '0.8' }}>Replies</TableCell>
+                        <TableCell align="right" sx={{ fontSize: 25, opacity: '0.8' }}>Views</TableCell>
+                    </TableRow>
+                </TableHead>
+
+                <TableBody>
+                    {rows.map((row) => (
+                        <TableRow key={row.Question}>
+                            <TableCell component="th" scope="row" sx={{ fontSize: 17 }}>
+                                <Typography fontWeight="xl">
+                                    {row.Question}
+
+                                </Typography>
+                            </TableCell>
+                            <TableCell align="right" sx={{ display: 'flex' }}>
+                                {row.ReplyUsersInfo.map((e) => {
+                                    return <img src={e} alt="image not found" className='w-10 h-10 rounded-full mx-1' />
+                                })}
+                            </TableCell>
+                            <TableCell align="right">
+                                <Typography fontWeight="xl">
+                                    {row.NoReplyUsers}
+
+                                </Typography>
+
+                            </TableCell>
+                            <TableCell align="right">
+                                <Typography fontWeight="xl">
+                                    {row.NoViews}
+
+
+                                </Typography>
+                            </TableCell>
                         </TableRow>
-                    </TableHead>
-
-                    <TableBody>
-                        {rows.map((row) => (
-                            <TableRow key={row.Question}>
-                                <TableCell component="th" scope="row" sx={{ fontSize: 17 }}>
-                                    <Typography fontWeight="xl">
-                                        {row.Question}
-
-                                    </Typography>
-                                </TableCell>
-                                <TableCell align="right" sx={{ display: 'flex' }}>
-                                    {row.ReplyUsersInfo.map((e) => {
-                                        return <img src={e} alt="image not found" className='w-10 h-10 rounded-full mx-1' />
-                                    })}
-                                </TableCell>
-                                <TableCell align="right">
-                                    <Typography fontWeight="xl">
-                                        {row.NoReplyUsers}
-
-                                    </Typography>
-
-                                </TableCell>
-                                <TableCell align="right">
-                                    <Typography fontWeight="xl">
-                                        {row.NoViews}
-
-
-                                    </Typography>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        </>
+                    ))}
+                </TableBody>
+            </Table>
+        </TableContainer>
+    </>
     );
 }

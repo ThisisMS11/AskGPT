@@ -26,7 +26,7 @@ function comment() {
               />
              
           </ListItem>
-          <Typography variant="p" color="initial" sx = {{marginLeft : '1rem'}}>
+          <Typography variant="span" color="initial" sx = {{marginLeft : '1rem'}}>
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere eius dolor magnam natus optio a, similique, beatae labore, veniam nemo saepe! Magnam, nam! Explicabo fugiat reiciendis, deleniti harum ullam magnam?
     </Typography>
           <List sx = {{display : 'flex', justifyContent : "space-between" , paddingX : "12px"}}>

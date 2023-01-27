@@ -5,8 +5,12 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { useState } from 'react';
 import React from 'react';
+import axios from 'axios'
+import { useAuth } from '../context/auth'
+import { useNavigate } from 'react-router';
 
 const Header = () => {
+    const navigate = useNavigate();
     // const [open, setOpen] = useState(false);
 
     // const handleClose = () => {
@@ -16,15 +20,54 @@ const Header = () => {
     // const handleClick = () => {
     //     setOpen(!open);
     // }
-
+    const auth = useAuth();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
+    const handleClose1 = () => {
+        setAnchorEl(null);
+        navigate('/panel')
+    };
+
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    const handlelogout = async () => {
+
+
+        const token = localStorage.getItem('token');
+        console.log('logout token => ', token);
+
+        axios.defaults.headers.common['authorisation'] = `Bearer ${token}`;
+
+
+        //! here we also need to make the api call to remove the cookie storing user info at server side.
+
+        await axios.get('http://localhost:4001/api/v1/user/logout').then((response) => {
+            console.log(response);
+
+            if (response.data.status == 'success') {
+                alert('logout successful');
+                //* if logout is successful nullifying the localstorage token and user info that has been set.
+                localStorage.setItem('token', null);
+                auth.setUser(null);
+                setAnchorEl(null)
+                navigate('/')
+            }
+        }).catch((err) => {
+            console.log('logout error => ', err);
+        })
+
+
+    }
+
+    const handleClose3 = () => {
+        setAnchorEl(null)
+        navigate('/login')
+    }
 
     return (
         <div className={classes.header}>
@@ -59,8 +102,8 @@ const Header = () => {
                     horizontal: 'left',
                 }}
             >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>Logout</MenuItem>
+                <MenuItem onClick={handleClose1}>Profile</MenuItem>
+                {auth.user ? <MenuItem onClick={handlelogout}>Logout</MenuItem> : <MenuItem onClick={handleClose3}>LogIn</MenuItem>}
             </Menu>
         </div>
     )

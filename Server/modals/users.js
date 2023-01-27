@@ -52,8 +52,10 @@ const userSchema = new mongoose.Schema({
     //     type: Boolean,
     //     default: false
     // },
-    verificationToken: String,
-    verificationTokenExpire: Date,
+    // verificationToken: String,
+    // verificationTokenExpire: Date,
+
+    //! for reseting the password
     resetPasswordToken: String,
     resetPasswordExpire: Date,
     createdAt: {
@@ -62,6 +64,7 @@ const userSchema = new mongoose.Schema({
     }
 })
 
+// !to save the password in hash form
 userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) {
         next();
@@ -69,6 +72,9 @@ userSchema.pre('save', async function (next) {
     const salt = bcrypt.genSaltSync(10);
     this.password = await bcrypt.hash(this.password, salt);
 })
+
+
+// !to remove the cloudinary content of the user if we delete the user.
 
 userSchema.pre('remove', async function (next) {
     try {
@@ -80,7 +86,6 @@ userSchema.pre('remove', async function (next) {
     }
 
     next();
-
 })
 
 
@@ -88,11 +93,15 @@ userSchema.methods.matchPassword = function (password) {
     return bcrypt.compare(password, this.password);
 }
 
+
+
 userSchema.methods.getSignedJwtToken = function () {
-    return jwt.sign({ id: this._id, password: this.password }, process.env.JWT_SECRET, {
+    return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
         expiresIn: process.env.JWT_EXPIRE
     });
 }
+
+
 
 userSchema.methods.getResetPasswordToken = function () {
     const resetToken = crypto.randomBytes(20).toString('hex');
@@ -101,11 +110,11 @@ userSchema.methods.getResetPasswordToken = function () {
     return resetToken;
 }
 
-userSchema.methods.getVerificationToken = function () {
-    const verificationToken = crypto.randomBytes(20).toString('hex');
-    this.verificationToken = crypto.createHash('sha256').update(verificationToken).digest('hex');
-    this.verificationTokenExpire = Date.now() + 10 * 60 * 1000;
-    return verificationToken;
-}
+// userSchema.methods.getVerificationToken = function () {
+//     const verificationToken = crypto.randomBytes(20).toString('hex');
+//     this.verificationToken = crypto.createHash('sha256').update(verificationToken).digest('hex');
+//     this.verificationTokenExpire = Date.now() + 10 * 60 * 1000;
+//     return verificationToken;
+// }
 
 module.exports = mongoose.model('Users', userSchema);

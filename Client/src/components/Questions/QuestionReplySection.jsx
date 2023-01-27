@@ -21,6 +21,8 @@ import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
 import axios from 'axios';
 
+
+
 const QuestionReplySection = () => {
 
     // const context = useContext(userContext);
@@ -163,12 +165,20 @@ const QuestionReplySection = () => {
     }
 
 
-    const [chatGPT, setChatGPT] = useState(null);
 
+
+    const [chatGPT, setChatGPT] = useState("Hello i am good how are you ?");
+
+    /*
     useEffect(() => {
 
         async function call() {
-            await axios.post('http://localhost:4001/question/getAns', { "question": mainquestion })
+
+            var data = {
+                'content-Type': 'val1',
+                'key2': 'val2'
+            }
+            await axios.post('http://localhost:4001/question/getAns', { question: mainquestion })
                 .then(function (response) {
                     console.log(response);
                     setChatGPT(response.data);
@@ -176,26 +186,11 @@ const QuestionReplySection = () => {
                 .catch(function (error) {
                     console.log(error);
                 });
-
-
-            //     await fetch(`http://localhost:4001/question/getAns`, {
-            //         method: 'POST',
-            //         headers: {
-            //             'Content-Type': 'application/json',
-            //         },
-            //         body: JSON.stringify(})
-
-            // }).then((response) => response.json())
-            // .then((resjson) => {
-            //     console.log(resjson);
-
-            // }).catch((err) => {
-            //     console.log("Upation document error => ", err)
-            // });
         }
 
         call();
-    }, [replies])
+    }, [])
+    */
 
 
 
@@ -283,14 +278,17 @@ const QuestionReplySection = () => {
                             {/* Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita aliquid molestiae eius sint facilis rem reprehenderit maiores magnam mollitia doloremque ex, magni praesentium at nisi a repellendus delectus incidunt adipisci dolore commodi fugiat atque. Aliquam rem, ipsam, magni possimus vel ea quasi, quo impedit fuga ullam quam ad commodi voluptates maxime nisi velit pariatur quos placeat officiis incidunt maiores neque id harum facere. Dicta perferendis ducimus, repellendus esse deleniti officia, ex, maiores blanditiis temporibus aut assumenda. Repudiandae aspernatur reprehenderit praesentium ex, ducimus voluptatem expedita commodi error porro numquam? Mollitia, nulla accusamus. Minus tempore illum fuga. Impedit delectus a commodi reprehenderit? */}
 
                             {chatGPT}
+                            {/* Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita aliquid molestiae eius sint facilis rem reprehenderit maiores magnam mollitia doloremque ex, magni praesentium at nisi a repellendus delectus incidunt adipisci dolore commodi fugiat atque. Aliquam rem, ipsam, magni possimus vel ea quasi, quo impedit fuga ullam quam ad commodi voluptates maxime nisi velit pariatur quos placeat officiis incidunt maiores neque id harum facere. Dicta perferendis ducimus, repellendus esse deleniti officia, ex, maiores blanditiis temporibus aut assumenda. Repudiandae aspernatur reprehenderit praesentium ex, ducimus voluptatem expedita commodi error porro numquam? Mollitia, nulla accusamus. Minus tempore illum fuga. Impedit delectus a commodi reprehenderit? */}
+
+                            {chatGPT}
                         </div>
                     </section>
 
 
                     <section className="comments  border-green-400 w-full p-1 flex flex-col gap-4">
                         {
-                            replies.map((e) => {
-                                return <Comment author={e.name} message={e.message} time={e.time} />
+                            replies.map((e,index) => {
+                                return <Comment author={e.name} message={e.message} time={e.time} key={index}/>
                             })
                         }
                     </section>

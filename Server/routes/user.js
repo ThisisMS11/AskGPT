@@ -14,6 +14,7 @@ router.post('/register', register);
 router.route('/update').put(protect, updateUserCrediantials)
 router.route('/updatePassword').put(protect, updatePassword)
 // router.route('/verify/:token').get(verifyEmail);
+
 router.route('/logout').get(protect, logout);
 router.route('/uploadProfilePic').put(protect, uploadProfilePic);
 router.route('/deleteProfilePic').delete(protect, deleteProfilePic);

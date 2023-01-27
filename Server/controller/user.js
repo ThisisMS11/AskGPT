@@ -4,9 +4,6 @@ const asyncHandler = require('../middleware/asyncHandler')
 const cloudinary = require('../utils/cloudinary');
 
 exports.getProfile = asyncHandler(async (req, res, next) => {
-    const followingLength = req.user.following.length;
-    const followersLength = req.user.followers.length;
-
     res.status(200).send({ success: true, data: { user: req.user } })
 })
 
@@ -78,6 +75,8 @@ exports.deleteProfilePic = asyncHandler(async (req, res, next) => {
     await user.save();
     res.status(200).send({ success: true, data: user });
 })
+
+
 
 exports.addBio = asyncHandler(async (req, res, next) => {
     let user = await User.findById(req.user._id);

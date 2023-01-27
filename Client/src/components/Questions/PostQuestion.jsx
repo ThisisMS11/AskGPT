@@ -8,10 +8,10 @@ import ImageResize from 'quill-image-resize-module-react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
-
-
 import { useNavigate } from 'react-router-dom'
 import Header from '../home/header'
+
+import { useAuth } from '../context/auth'
 
 
 const PostQuestion = () => {
@@ -98,6 +98,13 @@ const PostQuestion = () => {
     console.log("quill content : ", quill.getContents().ops);
     console.log(newreply)
   }
+
+  const auth=useAuth();
+
+  useEffect(() => {
+    console.log('useAuth.user => ',auth.user);
+  }, [])
+  
 
   return (
     <>
