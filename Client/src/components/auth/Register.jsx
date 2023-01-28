@@ -37,8 +37,43 @@ const Register = () => {
   async function registerUser(event) {
     event.preventDefault()
 
+    if (newuserinfo.password !== newuserinfo.confirmpassword) {
+      alert("confirm password do not match");
+      return;
+    }
+
     console.log('newuserinfo =>  ', newuserinfo);
 
+    const ReqBodyDetails = {
+      name: newuserinfo.username,
+      email: newuserinfo.email,
+      password: newuserinfo.password,
+      image: newuserinfo.image
+    }
+
+    // const newuserinfo=[...newuserinfo,]
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    };
+
+    await axios.post('http://localhost:4001/api/v1/user/register', ReqBodyDetails, config)
+      .then((res) => {
+        console.log("Regiteration Response : ", res);
+        if (res.data.status) {
+          alert('Registraion Successful');
+          navigate('/')
+        }
+      })
+      .catch((err) => {
+        //! to show the error response from server side.
+        alert(err.response.data.error);
+        console.log('Registration Error ', err);
+      })
+
+    /*
     const response = await fetch('http://localhost:4001/api/v1/user/register', {
       method: 'POST',
       headers: {
@@ -75,13 +110,13 @@ const Register = () => {
     else {
       console.log("Some error ocurred")
     }
+    */
 
   }
 
 
   const handleOnChange = (e) => {
     setNewuserinfo({ ...newuserinfo, [e.target.name]: e.target.value })
-
   }
 
 
@@ -95,7 +130,8 @@ const Register = () => {
     cpasswordvalid, setCpasswordvalid
   } = validContext;
 
-  const [files, setFiles] = useState([])
+  const [files, setFiles] = useState([]);
+
   const imageupload = () => {
 
     // converting file matadata into base64 encoding.
@@ -106,7 +142,7 @@ const Register = () => {
     if (file) {
       reader.readAsDataURL(file);
       reader.onloadend = () => {
-        setBlogcardinfo({ ...blogcardinfo, image: reader.result })
+        setNewuserinfo({ ...newuserinfo, image: reader.result })
       }
     }
   }
@@ -171,7 +207,7 @@ const Register = () => {
 
 
 
-                <form onSubmit={registerUser}>
+                <div>
 
                   <div className="mb-[0.92rem]  ">
                     <div className="text-white text-left ml-4 text-xl mb-[0.8rem]">
@@ -277,6 +313,7 @@ const Register = () => {
                     <button
                       type="submit"
                       className="inline-block px-7 py-3 bg-AuthButton text-white font-medium text-sm leading-snug uppercase rounded-full shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out " disabled={stateSignUp}
+                      onClick={registerUser}
                     >
                       Signup
                     </button>
@@ -290,7 +327,7 @@ const Register = () => {
                       >
                     </span>
                   </div>
-                </form>
+                </div>
 
               </div>
             </div>

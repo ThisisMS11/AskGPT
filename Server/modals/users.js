@@ -23,10 +23,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         unique: true,
         required: [true, "Please add a email"],
-        match: [
-            /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-            'Please add a valid email'
-        ]
+        // match: [
+        //     /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+        //     'Please add a valid email'
+        // ]
     },
     // unverifiedEmail: {
     //     type: String,
@@ -55,9 +55,10 @@ const userSchema = new mongoose.Schema({
     // verificationToken: String,
     // verificationTokenExpire: Date,
 
-    //! for reseting the password
-    resetPasswordToken: String,
-    resetPasswordExpire: Date,
+    // //! for reseting the password
+    // resetPasswordToken: String,
+    // resetPasswordExpire: Date,
+    
     createdAt: {
         type: Date,
         default: Date.now
@@ -103,12 +104,12 @@ userSchema.methods.getSignedJwtToken = function () {
 
 
 
-userSchema.methods.getResetPasswordToken = function () {
-    const resetToken = crypto.randomBytes(20).toString('hex');
-    this.resetPasswordToken = crypto.createHash('sha256').update(resetToken).digest('hex');
-    this.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
-    return resetToken;
-}
+// userSchema.methods.getResetPasswordToken = function () {
+//     const resetToken = crypto.randomBytes(20).toString('hex');
+//     this.resetPasswordToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+//     this.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
+//     return resetToken;
+// }
 
 // userSchema.methods.getVerificationToken = function () {
 //     const verificationToken = crypto.randomBytes(20).toString('hex');

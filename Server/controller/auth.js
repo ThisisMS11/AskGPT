@@ -40,34 +40,57 @@ exports.login = asyncHandler(async (req, res, next) => {
 
 
 exports.register = asyncHandler(async (req, res, next) => {
-    const { name, email, password, role } = req.body;
+    console.log('registration body : ',req.body)
+    const { name, email, password, image } = req.body;
 
-    let user1 = await User.findOne({ email: req.body.email });
+    let newuser = await User.findOne({ email: req.body.email });
 
-    if (user1) {
+    if (newuser) {
         return next(new errorResponse('User already exists with given email', 400));
     }
 
-    user1 = await User.findOne({ name: req.body.name });
+    newuser = await User.findOne({ name: req.body.name });
 
-    if (user1) {
+    if (newuser) {
         return next(new errorResponse('User already exists with given name', 400));
     }
 
-    const profilePic = {
+    let profilePic = {
         public_id: 'profilePic/defaultMentor_aucyyg',
         url: 'https://res.cloudinary.com/dbatsdukp/image/upload/v1673782839/profilePic/defaultMentor_aucyyg.jpg'
     }
 
-    const user = await User.create({ name, email, password, role, profilePic });
+    let uploadRes;
+    if (req.body.image) {
+        uploadRes = await cloudinary.uploader.upload(image, {
+            upload_preset: 'BlogYou'
+        })
+        // ! image is given then image is uploaded and thus user further too give public_id and url.
+        if (uploadRes) {
+            // uploadRes will contain information about the uploaded image.
+            profilePic = {
+                public_id: uploadRes.public_id,
+                url: uploadRes.url
+            }
+        }
+    }
+    
+    newuser = await User.create({
+        name: name,
+        email: email,
+        password: password,
+        profilePic: profilePic
+    });
+    
+
 
     // const token = user.getVerificationToken();
 
-    await user.save({ validateBeforeSave: false });
+    await newuser.save({ validateBeforeSave: false });
 
-    sendTokenResponse(user, 200, res)
+    sendTokenResponse(newuser, 200, res)
 
-    // const verificationUrl = `${req.protocol}://${req.get(
+    //const verificationUrl = `${req.protocol}://${req.get(
     //     'host',
     // )}/api/v1/auth/resetpassword/${token}`;
 
@@ -155,7 +178,7 @@ exports.updateUserCrediantials = asyncHandler(async (req, res, next) => {
     if (req.body.password || req.body.role) {
         return next(new errorResponse('Not authorized to change password,role', 404));
     }
-    const user1 = await User.findById(req.user._id);
+    const newuser = await User.findById(req.user._id);
 
     const user = await User.findByIdAndUpdate(req.user._id, req.body, { new: true, runValidators: true });
     res.status(200).json({ data: user })

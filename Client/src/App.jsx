@@ -1,7 +1,7 @@
 import Comments from './components/comment'
 import { Route, Routes } from 'react-router'
 import Home from './components/home/home'
-import SignUp from './components/auth/index'
+import SignUp from './components/auth/Register'
 import Login from './components/login/Login'
 import QuestionPanelReview from './components/Questions/QuestionPanelReview'
 import QuestionReplySection from './components/Questions/QuestionReplySection'
