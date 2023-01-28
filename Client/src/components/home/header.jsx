@@ -3,23 +3,23 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import React from 'react';
 import axios from 'axios'
 import { useAuth } from '../context/auth'
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
+import { setOptions } from 'filepond';
 
 const Header = () => {
     const navigate = useNavigate();
-    // const [open, setOpen] = useState(false);
 
-    // const handleClose = () => {
-    //     setOpen(false);
-    // }
+    const notloggedinpic = "https://images.unsplash.com/photo-1508921912186-1d1a45ebb3c1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8cGhvdG98ZW58MHx8MHx8&w=1000&q=80";
 
-    // const handleClick = () => {
-    //     setOpen(!open);
-    // }
+    const [pic, setPic] = useState(notloggedinpic);
+
+    const [user, setUser] = useState(null);
+
+
     const auth = useAuth();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -39,7 +39,7 @@ const Header = () => {
 
 
         const token = localStorage.getItem('token');
-        console.log('logout token => ', token);
+        // console.log('logout token => ', token);
 
         axios.defaults.headers.common['authorisation'] = `Bearer ${token}`;
 
@@ -53,7 +53,10 @@ const Header = () => {
                 alert('logout successful');
                 //* if logout is successful nullifying the localstorage token and user info that has been set.
                 localStorage.setItem('token', null);
-                auth.setUser(null);
+                // localStorage.setItem('userinfo', null);
+                localStorage.removeItem('userinfo');
+                setUser(null);
+                setPic(notloggedinpic)
                 setAnchorEl(null)
                 navigate('/')
             }
@@ -68,10 +71,29 @@ const Header = () => {
         setAnchorEl(null)
         navigate('/login')
     }
+    const movetohome = () => {
+        navigate('/')
+    }
+
+    useEffect(() => {
+
+        let myuser = localStorage.getItem('userinfo');
+
+        console.log('user => ', user);
+        console.log('myuser => ', myuser);
+
+        if (myuser && user == null) {
+            console.log('i am here')
+            myuser = JSON.parse(localStorage.getItem('userinfo'));
+            setUser(myuser);
+            setPic(myuser.profilePic.url)
+        }
+    }, [user, pic])
+
 
     return (
         <div className={classes.header}>
-            <img className={classes.image1} src="https://images.unsplash.com/photo-1508921912186-1d1a45ebb3c1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8cGhvdG98ZW58MHx8MHx8&w=1000&q=80"></img>
+            <img className={`${classes.image1} cursor-pointer`} src="https://images.unsplash.com/photo-1508921912186-1d1a45ebb3c1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8cGhvdG98ZW58MHx8MHx8&w=1000&q=80" onClick={movetohome}></img>
 
 
             <div className={`${classes.search}`}>
@@ -85,7 +107,8 @@ const Header = () => {
 
             </div>
 
-            <img className={classes.image2} src="https://images.unsplash.com/photo-1508921912186-1d1a45ebb3c1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8cGhvdG98ZW58MHx8MHx8&w=1000&q=80" onClick={handleClick}></img>
+            <img className={classes.image2} src={pic} onClick={handleClick}></img>
+            {/* <img className={classes.image2} src={auth.user.profilePic.url} onClick={handleClick}></img> */}
 
             <Menu
                 id="demo-positioned-menu"
@@ -103,7 +126,7 @@ const Header = () => {
                 }}
             >
                 <MenuItem onClick={handleClose1}>Profile</MenuItem>
-                {auth.user ? <MenuItem onClick={handlelogout}>Logout</MenuItem> : <MenuItem onClick={handleClose3}>LogIn</MenuItem>}
+                {user ? <MenuItem onClick={handlelogout}>Logout</MenuItem> : <MenuItem onClick={handleClose3}>LogIn</MenuItem>}
             </Menu>
         </div>
     )

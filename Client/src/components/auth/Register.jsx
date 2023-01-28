@@ -28,6 +28,9 @@ registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview, F
 
 const Register = () => {
   const navigate = useNavigate();
+
+  //Custom hook for user authentication
+
   const auth = useAuth();
   const [newuserinfo, setNewuserinfo] = useState({ username: "", email: "", password: "", confirmpassword: "", image: "" });
 
@@ -64,7 +67,12 @@ const Register = () => {
         console.log("Regiteration Response : ", res);
         if (res.data.status) {
           alert('Registraion Successful');
-          navigate('/')
+
+
+          // Inside This we are setting  the auth.user to registered user returns true on successful population of auth.user
+          if (auth.GetUserInfo(res.data.token)) {
+            navigate('/')
+          }
         }
       })
       .catch((err) => {
@@ -72,46 +80,6 @@ const Register = () => {
         alert(err.response.data.error);
         console.log('Registration Error ', err);
       })
-
-    /*
-    const response = await fetch('http://localhost:4001/api/v1/user/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-
-      body: JSON.stringify({ name: newuserinfo.username, email: newuserinfo.email, password: newuserinfo.password, }),
-
-    })
-
-    const data = await response.json()
-    console.log(data)
-
-    if (data.status === true) {
-      // setEmail('')
-      // setName('')
-      // setPassword('')
-      try {
-        const res = await axios.get('http://localhost:4001/api/v1/user/', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/JSON',
-            'authorisation': `Bearer ${data.token}`
-          }
-
-        })
-        auth.setUser(res.data.data.user)
-        navigate('/')
-      }
-      catch (err) {
-        console.log(err);
-      }
-    }
-    else {
-      console.log("Some error ocurred")
-    }
-    */
-
   }
 
 

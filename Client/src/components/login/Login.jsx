@@ -20,47 +20,34 @@ const Login = () => {
 
   async function loginUser(event) {
     event.preventDefault()
-    const userDetails = { email, password }
+    const userDetails = { email, password };
 
     console.log('Input fields values => ', userDetails);;
 
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    };
 
     //! calling the login api here 
-    const response = await fetch('http://localhost:4001/api/v1/user/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(userDetails),
-    })
-      .then((response) => response.json())
-      .then(async (data) => {
+    await axios.post('http://localhost:4001/api/v1/user/login', userDetails, config)
+      .then((res) => {
         //! data is an object with token and status(true/false);
-        console.log('loggin response => ', data);
+        console.log('loggin response => ', res);
 
-        if (data.status && data.token) {
+        if (res.data.status && res.data.token) {
 
           alert('login Successful');
 
-          localStorage.setItem('token', data.token)
+          localStorage.setItem('token', res.data.token)
 
-          try {
-            const res = await axios.get('http://localhost:4001/api/v1/user', {
-              method: 'GET',
-              headers: {
-                // "access-control-allow-origin": "*",
-                // 'Content-Type': 'application/JSON',
-                'authorisation': `Bearer ${data.token}`
-              }
+          const getuserres = auth.GetUserInfo(res.data.token);
+          console.log(getuserres);
 
-            })
-            console.log('fetching user information using token like this :', res)
-
-            //! setting the userinfo to context usestate to use globally anywhere .
-            auth.setUser(res.data.data.user)
-            navigate(redirectPath)
-          } catch (error) {
-            console.log(error)
+          if (getuserres) {
+            alert('User Information Sucessfully saved in LocalStorage.');
+            navigate('/');
           }
         }
         else {

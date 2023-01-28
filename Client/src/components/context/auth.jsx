@@ -1,5 +1,5 @@
-import { useContext, createContext, useState, useEffect } from "react";
-
+import { useContext, createContext, useState } from "react";
+import axios from "axios";
 const authContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -13,9 +13,38 @@ export const AuthProvider = ({ children }) => {
     //     });
     // }, []);
 
+
+    //! to Get Access to User Information with the help of token
+    const GetUserInfo = async (token) => {
+
+        await axios.get('http://localhost:4001/api/v1/user/', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/JSON',
+                'authorisation': `Bearer ${token}`
+            }
+        })
+            .then((res) => {
+                console.log('GetUserInfo Response : ', res);
+                if (res.data.success) {
+
+                    // Storing the userinfo in localStorage so that we don't use the user incase our application page refreshes.
+
+                    const toString = JSON.stringify(res.data.data.user);
+                    localStorage.setItem('userinfo', toString);
+
+                    return true;
+                }
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }
+
     const value = {
         user,
-        setUser
+        setUser,
+        GetUserInfo
     };
 
     return (

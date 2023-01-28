@@ -5,6 +5,7 @@ const { login, register, updatePassword, updateUserCrediantials, forgotPasswordT
 const { getProfile, uploadProfilePic, deleteProfilePic, addBio } = require('../controller/user');
 const { protect, authorisation } = require('../middleware/auth');
 
+//! Protect is a middlewares that we have defined to ensure that the respective user trying to access the route is authenticated. 
 
 router.get('/', protect, getProfile);
 router.put('/generateResetToken', forgotPasswordToken);

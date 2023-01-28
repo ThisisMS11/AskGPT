@@ -35,14 +35,14 @@ const cai = require('./Routers/apiRouter')
 app.use('/question', cai);
 
 app.use(morgan('dev'));
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
 app.use(cookieParser());
 app.use(fileUpload({ useTempFiles: true }));
 
 
 
 app.use('/api/v1/user', user);
-app.use('/api/v1/posts', post); 
+app.use('/api/v1/posts', post);
 app.use('/api/v1/all_posts', allPosts);
 // app.use('/api/v1/adminusers', users);
 app.use(errorResponse)
