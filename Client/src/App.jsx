@@ -64,7 +64,7 @@ function App() {
           {/* here for seeing the question review panel we got to have the user logged in that why we are keeping it as a protected route */}
           <Route exact path='/panel' element={<Loading loading={loading}><AuthrequireLogin><QuestionPanelReview /></AuthrequireLogin></Loading>}></Route>
 
-          <Route exact path='/reply' element={<Loading loading={loading}><AuthrequireLogin><QuestionReplySection /></AuthrequireLogin></Loading>}></Route>
+          <Route exact path='/reply/:id' element={<Loading loading={loading}><AuthrequireLogin><QuestionReplySection /></AuthrequireLogin></Loading>}></Route>
 
           <Route path='/signup' element={<SignUp />} />
           <Route path='/postq' element={<PostQuestion />} />

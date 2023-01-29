@@ -68,7 +68,7 @@ const Register = () => {
         if (res.data.status) {
           alert('Registraion Successful');
 
-
+          localStorage.setItem('token', res.data.token)
           // Inside This we are setting  the auth.user to registered user returns true on successful population of auth.user
           if (auth.GetUserInfo(res.data.token)) {
             navigate('/')

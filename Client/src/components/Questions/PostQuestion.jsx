@@ -9,6 +9,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
 import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
 import Header from '../home/header'
 
 import { useAuth } from '../context/auth'
@@ -19,10 +20,12 @@ const PostQuestion = () => {
   const [quill, setQuill] = useState();
   const saveblogwithcardsubmitref = useRef(null);
 
-  const [newreply, setNewreply] = useState(null);
+  const [newpostinfo, setNewpostinfo] = useState({
+    MainQuestion: '',
+  })
 
   const handleChange = (event) => {
-    setNewreply(event.target.value);
+    setNewpostinfo({ ...newpostinfo, MainQuestion: event.target.value });
   };
 
 
@@ -96,15 +99,28 @@ const PostQuestion = () => {
 
   const showmequill = async () => {
     console.log("quill content : ", quill.getContents().ops);
-    console.log(newreply)
+
+    const postDetails = {
+      MainQuestion: newpostinfo.MainQuestion,
+      data: quill.getContents().ops,
+    }
+
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        'authorisation': `Bearer ${localStorage.getItem('token')}`
+      }
+    };
+
+    await axios.post('http://localhost:4001/api/v1/posts/', postDetails, config)
+      .then((res) => {
+        console.log('post response => ', res)
+      }).catch((err) => {
+        console.log(err);
+      })
   }
 
-  const auth=useAuth();
-
-  useEffect(() => {
-    console.log('useAuth.user => ',auth.user);
-  }, [])
-  
+  const auth = useAuth();
 
   return (
     <>

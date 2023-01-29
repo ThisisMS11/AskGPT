@@ -8,13 +8,21 @@ const fs = require('fs');
 const cloudinary = require('../utils/cloudinary');
 
 exports.createNewPost = asyncHandler(async (req, res, next) => {
+
+    // !to get the user id using middleware protect.
+
     req.body.user = req.user._id;
+
+    console.log(req.body);
+
     const newPost = await Post.create(req.body);
 
     const comments = await Comment.create({ post: newPost._id })
-    const postDetails = await Likes.create({ comment: comments._id })
+    // const postDetails = await Likes.create({ comment: comments._id })
     res.status(200).send({ success: true, data: newPost })
 })
+
+
 
 exports.updatePost = asyncHandler(async (req, res, next) => {
     const updatePost = await Post.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
@@ -90,11 +98,13 @@ exports.unlike = asyncHandler(async (req, res, next) => {
     res.status(200).send({ success: true, data: details });
 })
 
+
+//! To create new comment over the existing post.
 exports.comment = asyncHandler(async (req, res, next) => {
     const post = await Post.findById(req.params.postId);
 
     if (!post) {
-        next(new errorResponse(`No post found with id ${req.params.id}`, 401));
+        next(new errorResponse(`No post found with id ${req.params.postId}`, 401));
     }
     const comment = await Comment.findOne({ post: req.params.postId });
     comment.content.push({ user: req.user._id, comment: req.body.comment });
@@ -103,6 +113,7 @@ exports.comment = asyncHandler(async (req, res, next) => {
     res.status(200).send({ success: true, data: comment });
 })
 
+//! Editing a comment
 exports.editComment = asyncHandler(async (req, res, next) => {
     const comment = await Comment.findOne({ post: req.params.postId });
 
@@ -149,20 +160,31 @@ exports.deleteComment = asyncHandler(async (req, res, next) => {
     res.status(200).send({ success: true, data: comment });
 })
 
+// To get the details of a post
 exports.getPostDetails = asyncHandler(async (req, res, next) => {
-    let post = await Post.findById(req.params.id);
-    let commentPost = await Comment.findOne({ post: req.params.id });
-    if (!post) {
-        next(new errorResponse(`No post found with id ${req.params.id}`, 401));
-    }
-
-    post = Post.findById(req.params.id).populate([
+    let data = await Post.findById(req.params.id).populate([
+        { path: 'user', select: 'name profilePic.url' },
         { path: 'comments', select: 'content' },
         // { path: 'likes', select: 'likes' }
 
-    ]);
+    ]);;
 
-    let data = await post;
+    //! finding post instance in Comment modal as we know that for each post there exists one comment instance in the comment collection containing all the comments info for that specific post.
+
+    let commentPost = await Comment.findOne({ post: req.params.id });
+
+    if (!data) {
+        next(new errorResponse(`No post found with id ${req.params.id}`, 401));
+    }
+
+    // post = Post.findById(req.params.id).populate([
+    //     { path: 'comments', select: 'content' },
+    //     // { path: 'likes', select: 'likes' },
+    //     { path: 'user', select: 'name profilePic.url' }
+
+    // ]);
+
+    // let data = await post;
 
     console.log(data);
     const com = data.comments.map((item) => {
@@ -177,7 +199,7 @@ exports.getPostDetails = asyncHandler(async (req, res, next) => {
 
     // console.log(likesLength)
 
-    res.status(200).send({ success: true, data: { title: data.title, description: data.description, created_at: data.createdAt, comments: com, commentPost } });
+    res.status(200).send({ success: true, data: [{ MainQuestion: data.MainQuestion, data: data.data, createdAt: data.createdAt, user: data.user, comments: com, commentPost }] });
 })
 
 exports.getAllPosts = asyncHandler(async (req, res, next) => {
@@ -269,16 +291,23 @@ exports.getAllComments = asyncHandler(async (req, res, next) => {
 
 
 exports.getEveryPosts = asyncHandler(async (req, res, next) => {
+
+    //! here populating the post virtual attribute comments which signifies all the comments that are posted on the post specifically.
+
     let posts = await Post.find().populate([
         { path: 'comments', select: 'content id' },
-        // { path: 'likes', select: 'likes' }
+        //! you can give multiple keys to includes by giving a space in between like this here name , profilePic will be included one while populating the user in post modal.
+        { path: 'user', select: 'name profilePic.url' }
 
     ]);
     console.log(posts)
+
+    // !this data response will only send the comments array with the comment data and no more stuff related to the comments which posts does so it can be considered to a shorter response data 
+
     const data = posts.map((item) => {
         return {
-            title: item.title,
-            description: item.description,
+            MainQuestion: item.MainQuestion,
+            data: item.data,
             created_at: item.createdAt,
             comments: item.comments.map((item) => {
                 return item.content.map((item) => {

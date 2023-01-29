@@ -25,11 +25,6 @@ import axios from 'axios';
 
 const QuestionReplySection = () => {
 
-    // const context = useContext(userContext);
-    // let { questionWithID } = context;
-
-
-    // let { id } = useParams();
 
     const [drawerstate, setDrawerstate] = useState(true);
     const [quill, setQuill] = useState();
@@ -37,28 +32,10 @@ const QuestionReplySection = () => {
     const saveblogwithcardsubmitref = useRef(null);
 
 
-    const [questionWithID, setQuestionWithID] = useState(sampledata)
-
     const [mainquestion, setMainquestion] = useState(`What is React?`)
 
-
-    const wrapperRef1 = useCallback(wrapper => {
-
-        if (wrapper == null) return;
-        wrapper.innerHTML = ''
-
-        const editor = document.createElement("div");
-        wrapper.append(editor)
-
-        var q = new Quill(editor, {
-            theme: "snow", readOnly: true,
-            modules: {
-                toolbar: null   //Experience 2.0
-            }
-        })
-        // console.log(questionWithID);
-        q.setContents(questionWithID)
-    }, [])
+    //! to get access to our quill html element.
+    const newref = useRef(null);
 
     const [value, setValue] = useState(0);
 
@@ -92,9 +69,6 @@ const QuestionReplySection = () => {
         if (wrapper == null) return;
         wrapper.innerHTML = ''
         const editor = document.createElement("div");
-        // console.log(editor)
-
-        // this will put our toolbar as well as textarea inside the container div so that we would be able to clean it up at once.
 
         wrapper.append(editor)
 
@@ -134,10 +108,6 @@ const QuestionReplySection = () => {
         // setLoading(false);
 
         setQuill(q)
-
-        // console.log("freshdocument = ", freshdocument)
-
-        // q.setContents(freshdocument)
         q.enable();
 
     }, [])
@@ -193,6 +163,62 @@ const QuestionReplySection = () => {
     */
 
 
+    const { id: postID } = useParams();
+
+    const [post, setPost] = useState([]);
+
+    const viewpost = () => {
+        console.log('viewpost => ', post);
+    }
+
+
+    useEffect(() => {
+        async function call() {
+            await axios.get(`http://localhost:4001/api/v1/posts/${postID}`)
+                .then((res) => {
+
+                    console.log('details about this post ', res.data.data)
+
+                    setPost(res.data.data);
+
+
+                    // console.log('clicked post data : ', res.data.data.data);
+
+
+                    //! this will give us access to the element to which we have assigned the ref
+                    console.log(newref.current)
+
+                    // !Setting the data over the react-quill editor like this Bingo.
+
+                    if (newref.current == null) return;
+                    newref.current.innerHTML = ''
+
+                    const editor = document.createElement("div");
+                    newref.current.append(editor)
+
+                    var q = new Quill(editor, {
+                        theme: "snow", readOnly: true,
+                        modules: {
+                            toolbar: null   //Experience 2.0
+                        }
+                    })
+                    //! Magic lines.
+
+                    q.setContents(res.data.data[0].data)
+
+                })
+        }
+
+        call();
+
+
+
+
+    }, [])
+
+
+
+
 
 
 
@@ -202,55 +228,62 @@ const QuestionReplySection = () => {
             <div className='flex'>
 
 
-                <section className="Question  border-pink-400 text-center w-[35%] ">
-                    <div>
+                {
+                    post.map((post, index) => {
+                        return <section className="Question  border-pink-400 text-center w-[35%] " key={index}>
+                            <div>
 
-                        <div className="aboutauthor  border-green-600">
-                            <div className="question-title  border-black text-3xl font-semibold text-left p-3">
-                                Delete Item from specific location in list in Python [duplicate]
-                            </div>
+                                <div className="aboutauthor  border-green-600">
+                                    <div className="question-title  border-black text-3xl font-semibold text-left p-3">
+                                        {post.MainQuestion}
+                                    </div>
 
-                            <div className="question-author px-4 py-4  border-black flex justify-between">
-                                <div className="author-details  border-pink-400 flex ">
-                                    <img src="https://source.unsplash.com/500x300/?web-development" alt="" className='w-10 h-10 rounded-full ' />
-                                    <div className="author-name  border-blue-800 w-fit flex items-center justify-center ml-4 font-semibold">
-                                        Diane White
+                                    <div className="question-author px-4 py-4  border-black flex justify-between">
+                                        <div className="author-details  border-pink-400 flex ">
+                                            <img src={post.user.profilePic.url} alt="" className='w-10 h-10 rounded-full ' />
+                                            <div className="author-name  border-blue-800 w-fit flex items-center justify-center ml-4 font-semibold">
+                                                {post.user.name}
+                                            </div>
+                                        </div>
+
+                                        <div className="LikeShareReply  border-black flex ">
+                                            <button className='mx-2 font-bold text-md transition-all ease-out duration-300  rounded-xl w-fit text-white bg-blue-600 px-3 py-3' onClick={() => { setDrawerstate(!drawerstate) }} >
+                                                Reply <ReplyIcon sx={{ marginLeft: "2px" }} />
+                                            </button>
+
+                                            <div>
+                                                <BottomNavigation
+                                                    showLabels
+                                                    value={value}
+                                                    onChange={(event, newValue) => {
+                                                        value == 0 ? setValue(1) : setValue(0);
+                                                    }}
+                                                    sx={{ width: "fit-content" }}
+                                                >
+                                                    <Tooltip title="Like">
+                                                        <BottomNavigationAction icon={<FavoriteIcon />} />
+                                                    </Tooltip>
+
+
+                                                </BottomNavigation>
+                                            </div>
+
+
+                                        </div>
+
                                     </div>
                                 </div>
 
-                                <div className="LikeShareReply  border-black flex ">
-                                    <button className='mx-2 font-bold text-md transition-all ease-out duration-300  rounded-xl w-fit text-white bg-blue-600 px-3 py-3' onClick={() => { setDrawerstate(!drawerstate) }} >
-                                        Reply <ReplyIcon sx={{ marginLeft: "2px" }} />
-                                    </button>
-
-                                    <div>
-                                        <BottomNavigation
-                                            showLabels
-                                            value={value}
-                                            onChange={(event, newValue) => {
-                                                value == 0 ? setValue(1) : setValue(0);
-                                            }}
-                                            sx={{ width: "fit-content" }}
-                                        >
-                                            <Tooltip title="Like">
-                                                <BottomNavigationAction icon={<FavoriteIcon />} />
-                                            </Tooltip>
-
-
-                                        </BottomNavigation>
-                                    </div>
-
-
+                                <div>
+                                    <div className='container  border-red-500 w-fit' ref={newref} ></div>
                                 </div>
 
                             </div>
-                        </div>
+                        </section>
+                    })
+                }
 
-                        <div>
-                            <div className='container  border-red-500 w-fit' ref={wrapperRef1} ></div>
-                        </div>
-                    </div>
-                </section>
+
 
                 {/* <------------------------------------------------------Comments on Post section----------------------------------> */}
 
@@ -287,8 +320,8 @@ const QuestionReplySection = () => {
 
                     <section className="comments  border-green-400 w-full p-1 flex flex-col gap-4">
                         {
-                            replies.map((e,index) => {
-                                return <Comment author={e.name} message={e.message} time={e.time} key={index}/>
+                            replies.map((e, index) => {
+                                return <Comment author={e.name} message={e.message} time={e.time} key={index} />
                             })
                         }
                     </section>
@@ -324,6 +357,9 @@ const QuestionReplySection = () => {
             </Drawer>
 
 
+
+
+            <button onClick={viewpost}>click me</button>
 
 
         </>

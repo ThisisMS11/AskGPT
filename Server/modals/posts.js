@@ -2,15 +2,15 @@ const mongoose = require('mongoose');
 const cloudinary = require('../utils/cloudinary');
 
 const postSchema = new mongoose.Schema({
-    title: {
+    MainQuestion: {
         type: String,
-        required: [true, 'Please add a title'],
+        required: [true, 'Please Write a summary of your Question'],
         trim: true,
         maxlength: 100
     },
-    description: {
-        type: String,
-        required: [true, "Please add description"],
+    data: {
+        type: Object,
+        required: [true, "Please Describe your problem"],
         default: ''
     },
     user: {
@@ -31,11 +31,11 @@ const postSchema = new mongoose.Schema({
 // !to delete all the comments of the corresponding deleted post.
 postSchema.pre('remove', async function (next) {
     await this.model('Comments').deleteMany({ post: this._id });
- 
+
     next();
 })
 
-//! to populate the comments
+//! to populate the comments this is a virtual attribute that represent all the comments of the respective post.
 postSchema.virtual('comments', {
     ref: 'Comments',
     localField: '_id',

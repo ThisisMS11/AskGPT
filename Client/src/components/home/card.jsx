@@ -12,33 +12,66 @@ import {
   ListItemAvatar,
   ListItemText,
 } from "@mui/material";
-import { Navigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+
 export default function ImgMediaCard(props) {
   const navigate = useNavigate();
-  const clickHandler = () => {
-    navigate(`/reply`);
+
+  const navigateToQuestion = () => {
+    // here i can make the api call if anything goes wrong.
+
+    console.log(props.postID);
+
+    navigate(`/reply/${props.postID}`);
   }
 
 
   return (
     <Card
       sx={{
-        maxWidth: 345,
+        maxWidth: 444,
         borderRadius: "1rem",
         boxShadow: "1",
         padding: "1rem",
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between'
       }}
     >
-      <CardMedia
-        component="img"
-        alt="green iguana"
-        height="140"
-        image="https://img.freepik.com/premium-vector/flat-winter-season-celebration-background_23-2149895776.jpg?w=900"
-        sx={{ borderRadius: "1rem" }}
-        onClick={clickHandler}
-      />
-      <CardContent>
+
+      <List >
+        <ListItem alignItems="flex-start">
+          <ListItemAvatar>
+            <Avatar alt="Cindy Baker" src={props.userimage} />
+
+
+          </ListItemAvatar>
+          <ListItemText
+            secondary={
+              <React.Fragment>
+                <Typography
+                  sx={{fontSize: 25, display: 'flex' }}
+                  component="span"
+                  variant="body2"
+                  color="text.primary"
+                >
+                  {props.username}
+                </Typography>
+                <Typography sx={{
+                  fontSize: 20, marginTop: '10px', color: '#6b8ed7', cursor: 'pointer',
+                  "&:hover": {
+                    color: '#3a70df'
+                  },
+                }} component="a" onClick={navigateToQuestion}>
+                  {props.question}
+                </Typography>
+
+              </React.Fragment>
+            }
+          />
+        </ListItem>
+      </List>
+      <CardContent >
         <Typography sx={{ display: "flex", justifyContent: "space-between" }}>
           <Typography sx={{ color: "gray" }}> comments</Typography>
           <Typography sx={{ color: "gray" }}> lastActivity</Typography>
@@ -53,31 +86,7 @@ export default function ImgMediaCard(props) {
           {/* <Typography variant="h1" color="initial"></Typography> */}
         </Typography>
       </CardContent>
-      <List >
-        <ListItem alignItems="flex-start">
-          <ListItemAvatar>
-            <Avatar alt="Cindy Baker" src={props.userimage} />
 
-
-          </ListItemAvatar>
-          <ListItemText
-            primary={props.username}
-            secondary={
-              <React.Fragment>
-                <Typography
-                  sx={{ display: "inline" }}
-                  component="span"
-                  variant="body2"
-                  color="text.primary"
-                >
-                  {props.username}
-                </Typography>
-                :- {props.quistion}
-              </React.Fragment>
-            }
-          />
-        </ListItem>
-      </List>
       {/* <CardActions>
         <Button size="small">Share</Button>
         <Button size="small">Learn More</Button>
