@@ -101,6 +101,8 @@ exports.unlike = asyncHandler(async (req, res, next) => {
 
 //! To create new comment over the existing post.
 exports.comment = asyncHandler(async (req, res, next) => {
+
+    console.log(req.body);
     const post = await Post.findById(req.params.postId);
 
     if (!post) {

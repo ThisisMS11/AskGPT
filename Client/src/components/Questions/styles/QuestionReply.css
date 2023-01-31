@@ -60,7 +60,7 @@
     flex-direction: column;
 }
 
-/* container in the left side of the page */
+/*! container in the left side of the page */
 .Question{
     position: relative;
     /* border: solid 2px red; */
@@ -89,5 +89,27 @@
     /* margin-top: 10px; */
     border-radius: 5px;
     /* background-color: black; */
+    color: black;
+}
+
+
+/* css for individual comments. */
+#PostComment{
+    /* border: solid 2px red; */
+    width: 100% !important;
+}
+#PostComment .ql-container{
+    border: none;
+}
+
+#PostComment .ql-editor {
+    width: 100%;
+    min-height: fit-content;
+    /* border: solid 2px green; */
+    height: fit-content ;
+    /* margin: 1rem; */
+    /* box-shadow: 0 0 5px 0 rgba(67, 66, 66, 0.5); */
+    background-color: white;
+
     color: black;
 }

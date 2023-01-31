@@ -42,6 +42,11 @@ const QuestionReplySection = () => {
     const [value, setValue] = useState(0);
 
 
+    const { id: postID } = useParams();
+    const [post, setPost] = useState([]);
+    const [comments, setComments] = useState([]);
+
+
     // quill text editor
     const Toolbar_options = [
         [{ 'header': [1, 2, 3, false] }, { 'font': [] }],
@@ -124,25 +129,24 @@ const QuestionReplySection = () => {
 
 
     //! Here i can make the api call for adding the comment to the database.
-    const showmequill = async () => {
+    const SubmitComment = async () => {
         console.log("quill content : ", quill.getContents().ops);
 
-        // console.log('newreply => ', newreply);
+        const config = {
+            headers: {
+                authorisation: `Bearer ${localStorage.getItem('token')}`
+            }
+        }
 
-        // const currentTime = new Date();
-        // const localtime = currentTime.toLocaleString();
+        const commentBody = {
+            comment: quill.getContents().ops
+        }
 
-        // const freshreply = {
-        //     "name": "Pratham",
-        //     "message": newreply,
-        //     "time": localtime
-        // }
+        await axios.put(`http://localhost:4001/api/v1/posts/comment/${postID}`, commentBody, config)
+            .then((res) => {
+                console.log('submitted comment => ', res.data);
+            }).catch((err) => { console.log(err) })
 
-        // setDrawerstate(!drawerstate);
-
-        // replies.push(freshreply);
-
-        // <------------------API point --------------------->
     }
 
 
@@ -174,11 +178,6 @@ const QuestionReplySection = () => {
     */
 
 
-    const { id: postID } = useParams();
-
-    const [post, setPost] = useState([]);
-
-    const [comments, setComments] = useState([]);
 
     const viewpost = () => {
         console.log('viewpost => ', post);
@@ -345,16 +344,25 @@ const QuestionReplySection = () => {
                     <section className="replyeditor  border-black">
                         <div className=' border-red-400' ref={ReplyWrapper}></div>
 
-                        <div onClick={showmequill} ref={saveblogwithcardsubmitref} className='text-center hidden  border-black rounded-lg mx-auto bg-black text-white py-1 cursor-pointer w-[8.5in]' >Save Draft</div>
+                        <div onClick={SubmitComment} ref={saveblogwithcardsubmitref} className='text-center hidden  border-black rounded-lg mx-auto bg-black text-white py-1 cursor-pointer w-[8.5in]' >Save Draft</div>
                     </section>
 
 
 
 
-                    <section className="comments border-green-400 w-full p-1 flex flex-col gap-4">
+                    <section className="comments border-green-400 w-full p-1 flex flex-col gap-4 mt-4">
                         {
                             comments.map((e, index) => {
-                                return <Comment author={e.user.name} message={e.comment} time={e.createdAt.split('T')[0]} key={index} profilePic={e.user.profilePic.url} />
+                                let topass = {
+                                    author: e.user.name,
+                                    time: e.createdAt.split('T')[0],
+                                    commentData: JSON.stringify(e.comment),
+                                    key: index,
+                                    profilePic: e.user.profilePic.url
+                                }
+
+                                return <Comment {...{ ...topass }} />
+                                // return <Comment author={e.user.name} message={e.comment} time={e.createdAt.split('T')[0]} key={index} profilePic={e.user.profilePic.url} />
                             })
                         }
                     </section>
@@ -372,7 +380,7 @@ const QuestionReplySection = () => {
             >
                 <div className='container  border-red-400 mx-auto' ref={ReplyWrapper}></div>
 
-                                        <div onClick={showmequill} ref={saveblogwithcardsubmitref} className='text-center hidden  border-black rounded-lg mx-auto bg-black text-white py-1 cursor-pointer w-[8.5in]' >Save Draft</div>
+                                        <div onClick={SubmitComment} ref={saveblogwithcardsubmitref} className='text-center hidden  border-black rounded-lg mx-auto bg-black text-white py-1 cursor-pointer w-[8.5in]' >Save Draft</div>
                 <div className='m-10 flex flex-col gap-4'>
 
                     <TextField
@@ -383,7 +391,7 @@ const QuestionReplySection = () => {
                         sx={{ width: 400 }}
                         onChange={handleChange}
                     />
-                    <Button variant="contained" endIcon={<SendIcon />} onClick={showmequill}>
+                    <Button variant="contained" endIcon={<SendIcon />} onClick={SubmitComment}>
                         Send
                     </Button>
                 </div>
