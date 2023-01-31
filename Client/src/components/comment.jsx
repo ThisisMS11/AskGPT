@@ -1,12 +1,12 @@
 import { Avatar, Box, List, ListItem, ListItemAvatar, ListItemText, Typography, Button, Checkbox } from '@mui/material'
 import React from 'react'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'; import FavoriteIcon from '@mui/icons-material/Favorite';
-function comment({ author, message, time }) {
+function comment({ author, message, time, profilePic }) {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", padding: '4px', borderRadius: '4px', marginLeft: "16px", bgcolor: 'white', boxShadow: '0 0 5px 0 rgba(0, 0, 0, 0.5)' }}>
       <ListItem alignItems="flex-start">
         <ListItemAvatar>
-          <Avatar alt="Cindy Baker" src="https://img.freepik.com/premium-vector/flat-winter-season-celebration-background_23-2149895776.jpg?w=900" />
+          <Avatar alt="Cindy Baker" src={profilePic} />
         </ListItemAvatar>
         <ListItemText
           primary={author}

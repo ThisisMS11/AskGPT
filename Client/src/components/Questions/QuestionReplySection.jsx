@@ -1,7 +1,8 @@
 import React, { useEffect, useContext, useCallback, useState, useRef } from 'react'
 import Quill from 'quill'
 import "quill/dist/quill.snow.css"
-import "./styles.css"
+import "./styles/styles.css"
+import "./styles/QuestionReply.css"
 import { useParams } from 'react-router-dom'
 import { eventWrapper } from '@testing-library/user-event/dist/utils'
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -20,6 +21,7 @@ import img from '../../assets/ChatGPT.png'
 import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
 import axios from 'axios';
+import Header from '../home/header'
 
 
 
@@ -35,23 +37,21 @@ const QuestionReplySection = () => {
     const [mainquestion, setMainquestion] = useState(`What is React?`)
 
     //! to get access to our quill html element.
-    const newref = useRef(null);
+    const PostRef = useRef(null);
 
     const [value, setValue] = useState(0);
 
 
     // quill text editor
     const Toolbar_options = [
-        [{ 'header': [1, 2, 3, 4, 5, 6, false] }, { 'font': [] }],
-        ['bold', 'italic', 'underline', 'strike', 'blockquote', 'code-block'],
+        [{ 'header': [1, 2, 3, false] }, { 'font': [] }],
+        ['bold', 'italic', 'blockquote', 'code-block'],
         [{ 'list': 'ordered' }, { 'list': 'bullet' }],
         [{ 'align': [] }],
         [{ 'color': [] }, { 'background': [] }],
-        [{ 'direction': 'rtl' }],
         [{ 'script': 'sub' }, { 'script': 'super' }],
         [{ 'indent': '-1' }, { 'indent': '+1' }],
-        ['link', 'image', 'video'],
-        ['clean']
+        ['link', 'image'],
     ]
 
 
@@ -62,8 +62,8 @@ const QuestionReplySection = () => {
     };
 
 
-
-    const wrapperRef2 = useCallback(wrapper => {
+    //! For the comment Box Editor
+    const ReplyWrapper = useCallback(wrapper => {
 
         // setLoading(true)
         if (wrapper == null) return;
@@ -71,7 +71,6 @@ const QuestionReplySection = () => {
         const editor = document.createElement("div");
 
         wrapper.append(editor)
-
 
         Quill.register('modules/imageResize', ImageResize);
 
@@ -85,10 +84,20 @@ const QuestionReplySection = () => {
             }
         })
 
+        // !Adding a class to the quill editor so that we can style it.
+        console.log('The Entire wrapper : ', wrapper);
+
+        wrapper.classList.add('QuestionReplySection__quill-wrapper');
+
+        const writingplace = wrapper.children[1].children[0];
+        const toolbar = wrapper.children[0];
+        toolbar.classList.add('QuestionReplySection__quill-toolbar');
+
+        writingplace.classList.add('QuestionReplySection__quill-editor')
+
 
         // ! adding the save draft button to our toolbar
 
-        const toolbar = Array.from(document.getElementsByClassName('.ql-toolbar'));
 
 
         let tool = wrapper.children[0];
@@ -96,8 +105,9 @@ const QuestionReplySection = () => {
 
         // Creating save Draft button in toolbar.
         const button = document.createElement('button');
-        button.innerHTML = 'Save Draft';
-        button.id = 'savedraftbutton'
+        button.innerHTML = 'comment';
+        button.id = 'commentbutton'
+        button.style.border = 'none';
 
         button.onclick = () => {
             saveblogwithcardsubmitref.current.click();
@@ -106,30 +116,31 @@ const QuestionReplySection = () => {
         tool.appendChild(button)
 
         // setLoading(false);
-
         setQuill(q)
         q.enable();
 
     }, [])
 
 
+
+    //! Here i can make the api call for adding the comment to the database.
     const showmequill = async () => {
-        // console.log("quill content : ", quill.getContents().ops);
+        console.log("quill content : ", quill.getContents().ops);
 
-        console.log('newreply => ', newreply);
+        // console.log('newreply => ', newreply);
 
-        const currentTime = new Date();
-        const localtime = currentTime.toLocaleString();
+        // const currentTime = new Date();
+        // const localtime = currentTime.toLocaleString();
 
-        const freshreply = {
-            "name": "Pratham",
-            "message": newreply,
-            "time": localtime
-        }
+        // const freshreply = {
+        //     "name": "Pratham",
+        //     "message": newreply,
+        //     "time": localtime
+        // }
 
-        setDrawerstate(!drawerstate);
+        // setDrawerstate(!drawerstate);
 
-        replies.push(freshreply);
+        // replies.push(freshreply);
 
         // <------------------API point --------------------->
     }
@@ -167,13 +178,15 @@ const QuestionReplySection = () => {
 
     const [post, setPost] = useState([]);
 
+    const [comments, setComments] = useState([]);
+
     const viewpost = () => {
         console.log('viewpost => ', post);
     }
 
 
     useEffect(() => {
-        async function call() {
+        async function postcall() {
             await axios.get(`http://localhost:4001/api/v1/posts/${postID}`)
                 .then((res) => {
 
@@ -186,15 +199,20 @@ const QuestionReplySection = () => {
 
 
                     //! this will give us access to the element to which we have assigned the ref
-                    console.log(newref.current)
+                    const postContainer = document.getElementById('PostClicked');
+
+                    console.log(postContainer);
+
+
+
 
                     // !Setting the data over the react-quill editor like this Bingo.
 
-                    if (newref.current == null) return;
-                    newref.current.innerHTML = ''
+                    if (PostRef.current == null) return;
+                    PostRef.current.innerHTML = ''
 
                     const editor = document.createElement("div");
-                    newref.current.append(editor)
+                    PostRef.current.append(editor)
 
                     var q = new Quill(editor, {
                         theme: "snow", readOnly: true,
@@ -209,7 +227,17 @@ const QuestionReplySection = () => {
                 })
         }
 
-        call();
+        postcall();
+
+        function commentcall() {
+            axios.get(`http://localhost:4001/api/v1/posts/comment/${postID}`)
+                .then((res) => {
+                    console.log('comments => ', res.data);
+                    setComments(res.data.comments[0].content);
+                })
+        }
+
+        commentcall();
 
 
 
@@ -225,7 +253,9 @@ const QuestionReplySection = () => {
     return (
         <>
 
-            <div className='flex'>
+            <Header />
+
+            <div className='flex '>
 
 
                 {
@@ -275,7 +305,7 @@ const QuestionReplySection = () => {
                                 </div>
 
                                 <div>
-                                    <div className='container  border-red-500 w-fit' ref={newref} ></div>
+                                    <div className='border-red-500 w-fit' ref={PostRef} id="PostClicked"></div>
                                 </div>
 
                             </div>
@@ -287,7 +317,7 @@ const QuestionReplySection = () => {
 
                 {/* <------------------------------------------------------Comments on Post section----------------------------------> */}
 
-                <div className='w-full'>
+                <div className='w-full  border-black'>
 
 
                     <section className="ChatGPTAnswer  border-red-400 p-5 bg-white m-4 rounded-md">
@@ -308,20 +338,23 @@ const QuestionReplySection = () => {
 
 
                         <div className="responsemsg mt-4 font-medium">
-                            {/* Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita aliquid molestiae eius sint facilis rem reprehenderit maiores magnam mollitia doloremque ex, magni praesentium at nisi a repellendus delectus incidunt adipisci dolore commodi fugiat atque. Aliquam rem, ipsam, magni possimus vel ea quasi, quo impedit fuga ullam quam ad commodi voluptates maxime nisi velit pariatur quos placeat officiis incidunt maiores neque id harum facere. Dicta perferendis ducimus, repellendus esse deleniti officia, ex, maiores blanditiis temporibus aut assumenda. Repudiandae aspernatur reprehenderit praesentium ex, ducimus voluptatem expedita commodi error porro numquam? Mollitia, nulla accusamus. Minus tempore illum fuga. Impedit delectus a commodi reprehenderit? */}
-
-                            {chatGPT}
-                            {/* Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita aliquid molestiae eius sint facilis rem reprehenderit maiores magnam mollitia doloremque ex, magni praesentium at nisi a repellendus delectus incidunt adipisci dolore commodi fugiat atque. Aliquam rem, ipsam, magni possimus vel ea quasi, quo impedit fuga ullam quam ad commodi voluptates maxime nisi velit pariatur quos placeat officiis incidunt maiores neque id harum facere. Dicta perferendis ducimus, repellendus esse deleniti officia, ex, maiores blanditiis temporibus aut assumenda. Repudiandae aspernatur reprehenderit praesentium ex, ducimus voluptatem expedita commodi error porro numquam? Mollitia, nulla accusamus. Minus tempore illum fuga. Impedit delectus a commodi reprehenderit? */}
-
                             {chatGPT}
                         </div>
                     </section>
 
+                    <section className="replyeditor  border-black">
+                        <div className=' border-red-400' ref={ReplyWrapper}></div>
 
-                    <section className="comments  border-green-400 w-full p-1 flex flex-col gap-4">
+                        <div onClick={showmequill} ref={saveblogwithcardsubmitref} className='text-center hidden  border-black rounded-lg mx-auto bg-black text-white py-1 cursor-pointer w-[8.5in]' >Save Draft</div>
+                    </section>
+
+
+
+
+                    <section className="comments border-green-400 w-full p-1 flex flex-col gap-4">
                         {
-                            replies.map((e, index) => {
-                                return <Comment author={e.name} message={e.message} time={e.time} key={index} />
+                            comments.map((e, index) => {
+                                return <Comment author={e.user.name} message={e.comment} time={e.createdAt.split('T')[0]} key={index} profilePic={e.user.profilePic.url} />
                             })
                         }
                     </section>
@@ -331,14 +364,15 @@ const QuestionReplySection = () => {
 
 
             {/* <-------------------------------------------------------Drawer------------------------------------------------------> */}
-            <Drawer
+
+            {/* <Drawer
                 anchor='right'
                 open={!drawerstate}
                 onClose={() => setDrawerstate(!drawerstate)}
             >
-                {/* <div className='container  border-red-400 mx-auto' ref={wrapperRef2}></div>
+                <div className='container  border-red-400 mx-auto' ref={ReplyWrapper}></div>
 
-                                        <div onClick={showmequill} ref={saveblogwithcardsubmitref} className='text-center hidden  border-black rounded-lg mx-auto bg-black text-white py-1 cursor-pointer w-[8.5in]' >Save Draft</div> */}
+                                        <div onClick={showmequill} ref={saveblogwithcardsubmitref} className='text-center hidden  border-black rounded-lg mx-auto bg-black text-white py-1 cursor-pointer w-[8.5in]' >Save Draft</div>
                 <div className='m-10 flex flex-col gap-4'>
 
                     <TextField
@@ -354,12 +388,12 @@ const QuestionReplySection = () => {
                     </Button>
                 </div>
 
-            </Drawer>
+            </Drawer> */}
 
 
 
 
-            <button onClick={viewpost}>click me</button>
+            {/* <button onClick={viewpost}>click me</button> */}
 
 
         </>

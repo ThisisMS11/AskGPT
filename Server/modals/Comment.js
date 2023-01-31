@@ -6,10 +6,18 @@ const commentSchema = new mongoose.Schema({
 
     content: [{
         user: { type: mongoose.Schema.ObjectId, ref: 'Users', },
-        comment: { type: String },
+        comment: {
+            type: Object,
+            required: [true, "Please type something for comment"],
+            default: ''
+        },
         likes: [{
             type: mongoose.Schema.ObjectId
-        }]
+        }],
+        createdAt: {
+            type: Date,
+            default: Date.now
+        }
     }],
 
     //! post here signifies the post corresponding to which the comment
@@ -17,6 +25,10 @@ const commentSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: 'Posts',
         required: true
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
     }
 
 },

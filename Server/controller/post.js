@@ -171,7 +171,8 @@ exports.getPostDetails = asyncHandler(async (req, res, next) => {
 
     //! finding post instance in Comment modal as we know that for each post there exists one comment instance in the comment collection containing all the comments info for that specific post.
 
-    let commentPost = await Comment.findOne({ post: req.params.id });
+    let commentPost = await Comment.findOne({ post: req.params.id }).populate([
+        { path: 'content.user', select: 'name profilePic.url' }]);
 
     if (!data) {
         next(new errorResponse(`No post found with id ${req.params.id}`, 401));
@@ -262,7 +263,9 @@ exports.getCommentDetails = asyncHandler(async (req, res, next) => {
 })
 
 exports.getAllComments = asyncHandler(async (req, res, next) => {
-    let comments = await Comment.find({ post: req.params.postId })
+    let comments = await Comment.find({ post: req.params.postId }).populate([
+        { path: 'content.user', select: 'name profilePic.url' },
+    ])
     // .populate([
     //     { path: 'likes', select: 'likes' }
 

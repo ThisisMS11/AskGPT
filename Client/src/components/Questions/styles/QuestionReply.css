@@ -1,0 +1,93 @@
+.QuestionReplySection__quill-wrapper {
+    margin: 0px 20px !important;
+    align-items: flex-start !important;
+    overflow-x: hidden !important;
+}
+
+
+
+.QuestionReplySection__quill-toolbar {
+
+    display: flex;
+    justify-content: flex-start !important;
+    width: 100% !important;
+    background-color: white !important;
+
+    /* border: none; */
+    box-shadow: none !important;
+    /* border: solid 2px rgb(0, 246, 25) !important; */
+    border: none;
+    margin: 0px !important;
+}
+
+.QuestionReplySection__quill-editor {
+    width: 100% !important;
+    min-height: 2in;
+    padding: 2rem;
+    /* margin: 1rem; */
+    /* box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5); */
+    background-color: white;
+    border: none !important;
+    color: black;
+    overflow-y: scroll;
+
+}
+
+#commentbutton {
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    background-color: black;
+    font-size: 12px;
+    color: white;
+
+}
+
+#commentbutton :hover {
+    background-color: rgb(225, 20, 20) !important;
+}
+
+
+/* css for the container containing the post on the left side */
+#PostClicked {
+    /* border: solid 2px green; */
+    width: 100% !important;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+}
+
+/* container in the left side of the page */
+.Question{
+    position: relative;
+    /* border: solid 2px red; */
+}
+#PostClicked .ql-container{
+    /* position: fixed !important;
+    top: 0px; */
+    width: 100% !important;
+    padding: 12px;
+    /* margin-left: 8px; */
+    /* border: solid 2px red; */
+    border: none;
+    /* /* height: 1000px;  */
+}
+
+#PostClicked .ql-editor {
+    width: 100%;
+    min-height: fit-content;
+    /* border: solid 2px green; */
+    height: 8in;
+    padding: 2rem;
+    /* margin: 1rem; */
+    box-shadow: 0 0 5px 0 rgba(67, 66, 66, 0.5);
+    background-color: white;
+    /* border: solid 2px red; */
+    /* margin-top: 10px; */
+    border-radius: 5px;
+    /* background-color: black; */
+    color: black;
+}

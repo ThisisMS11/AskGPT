@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useReducer, useRef } from 'react'
 import Quill from 'quill'
 import "quill/dist/quill.snow.css"
-import "./styles.css"
+import "./styles/styles.css"
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import ImageResize from 'quill-image-resize-module-react';
@@ -76,6 +76,13 @@ const PostQuestion = () => {
 
 
     let tool = wrapper.children[0];
+
+
+    // !Adding a class to the quill editor so that we can style it.
+    const writingplace = wrapper.children[1].children[0];
+
+    console.log(writingplace);
+    writingplace.classList.add('PostQuestionWritingPlace')
 
 
     // Creating save Draft button in toolbar.
