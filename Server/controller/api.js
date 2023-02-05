@@ -18,7 +18,7 @@ exports.chai = async (req, res) => {
       temperature: 0,
     });
     if (result) {
-      console.log(result.data.choices[0].text);
+      // console.log(result.data.choices[0].text);
 
       
       res.send(result.data.choices[0].text);

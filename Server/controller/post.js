@@ -13,7 +13,7 @@ exports.createNewPost = asyncHandler(async (req, res, next) => {
 
     req.body.user = req.user._id;
 
-    console.log(req.body);
+    // console.log(req.body);
 
     const newPost = await Post.create(req.body);
 
@@ -62,14 +62,18 @@ exports.deletePost = asyncHandler(async (req, res, next) => {
     res.status(200).send({ success: true, data: delpost })
 })
 
+
+//! to like a comment
 exports.like = asyncHandler(async (req, res, next) => {
-    const details = await Comment.findOne({ post: req.params.post_id });
+    let details = await Comment.findOne({ post: req.params.post_id });
+    console.log("req.user : ", req.user);
+    console.log('details.content : ', details.content);
 
     if (!details) {
-        next(new errorResponse(`No comment found with post id ${req.params.id}`, 401));
+        next(new errorResponse(`No comment found with post id ${req.params.post_id}`, 401));
     }
-
     details.content.map((item) => {
+        // console.log('item_id = ',item._id);
         if (item._id == req.params.comment_id) {
             if (!item.likes.includes(req.user._id)) {
                 item.likes.push(req.user._id);
@@ -77,10 +81,13 @@ exports.like = asyncHandler(async (req, res, next) => {
         }
     })
     details.save();
+   
 
-    res.status(200).send({ success: true, data: details });
+    const SpecificCommentDetails = details.content.filter((item) => item._id.equals(req.params.comment_id));
+    res.status(200).send({ success: true, data: SpecificCommentDetails });
 })
 
+//! to unlike a comment
 exports.unlike = asyncHandler(async (req, res, next) => {
     const details = await Comment.findOne({ post: req.params.post_id });
 
@@ -88,21 +95,26 @@ exports.unlike = asyncHandler(async (req, res, next) => {
         next(new errorResponse(`No comment found with post id ${req.params.id}`, 401));
     }
 
+
     details.content.map((item) => {
         if (item._id == req.params.comment_id) {
-            item.likes = item.likes.filter((like) => like == req.user._id);
+            item.likes = item.likes.filter((like) => like === req.user._id);
         }
     })
     details.save();
 
-    res.status(200).send({ success: true, data: details });
+    console.log('details.content : ', details.content);
+    //* this filteration is to send the details of the specific comment only.
+    const SpecificCommentDetails = details.content.filter((item) => item._id.equals(req.params.comment_id));
+
+    console.log('SpecificCommentDetails : ', SpecificCommentDetails);
+    res.status(200).send({ success: true, data: SpecificCommentDetails });
 })
 
 
 //! To create new comment over the existing post.
 exports.comment = asyncHandler(async (req, res, next) => {
 
-    console.log(req.body);
     const post = await Post.findById(req.params.postId);
 
     if (!post) {
@@ -205,17 +217,24 @@ exports.getPostDetails = asyncHandler(async (req, res, next) => {
     res.status(200).send({ success: true, data: [{ MainQuestion: data.MainQuestion, data: data.data, createdAt: data.createdAt, user: data.user, comments: com, commentPost }] });
 })
 
+
+//! to get all the posts of the user
 exports.getAllPosts = asyncHandler(async (req, res, next) => {
     let posts = await Post.find({ user: req.user.id }).populate([
-        { path: 'comments', select: 'content id' },
-        // { path: 'likes', select: 'likes' }
+        {
+            path: 'comments', select: 'content id',
+            populate: {
+                path: 'content.user',
+                select: 'name profilePic.url'
+            }
+        },
 
     ]);
-    console.log(posts)
+    // console.log(posts)
     const data = posts.map((item) => {
         return {
-            title: item.title,
-            description: item.description,
+            MainQuestion: item.MainQuestion,
+            data: item.data,
             created_at: item.createdAt,
             comments: item.comments.map((item) => {
                 return item.content.map((item) => {
@@ -248,7 +267,7 @@ exports.getCommentDetails = asyncHandler(async (req, res, next) => {
 
     let data = await comment;
 
-    console.log(data);
+    // console.log(data);
     // const com = data.comments.map((item) => {
     //     return item.content.map((item) => {
     //         return item.comment;
@@ -305,7 +324,7 @@ exports.getEveryPosts = asyncHandler(async (req, res, next) => {
         { path: 'user', select: 'name profilePic.url' }
 
     ]);
-    console.log(posts)
+    // console.log(posts)
 
     // !this data response will only send the comments array with the comment data and no more stuff related to the comments which posts does so it can be considered to a shorter response data 
 

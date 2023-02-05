@@ -75,15 +75,18 @@ const Header = () => {
         navigate('/')
     }
 
+    const handlePanel=()=>{
+        navigate('/panel')
+    }
+
     useEffect(() => {
 
         let myuser = localStorage.getItem('userinfo');
 
-        console.log('user => ', user);
-        console.log('myuser => ', myuser);
+        // console.log('user => ', user);
+        // console.log('myuser => ', myuser);
 
         if (myuser && user == null) {
-            console.log('i am here')
             myuser = JSON.parse(localStorage.getItem('userinfo'));
             setUser(myuser);
             setPic(myuser.profilePic.url)
@@ -126,7 +129,9 @@ const Header = () => {
                 }}
             >
                 <MenuItem onClick={handleClose1}>Profile</MenuItem>
-                {user ? <MenuItem onClick={handlelogout}>Logout</MenuItem> : <MenuItem onClick={handleClose3}>LogIn</MenuItem>}
+                {user ? <div><MenuItem onClick={handlelogout}>Logout</MenuItem>
+                    <MenuItem onClick={handlePanel}>Review Asked Questions</MenuItem> </div> :
+                    <MenuItem onClick={handleClose3}>LogIn</MenuItem>}
             </Menu>
         </div>
     )

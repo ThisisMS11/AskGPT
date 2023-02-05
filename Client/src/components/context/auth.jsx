@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
             }
         })
             .then((res) => {
-                console.log('GetUserInfo Response : ', res);
+                // console.log('GetUserInfo Response : ', res);
                 if (res.data.success) {
 
                     // Storing the userinfo in localStorage so that we don't use the user incase our application page refreshes.

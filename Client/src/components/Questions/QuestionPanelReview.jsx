@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useEffect, useState } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -8,6 +9,7 @@ import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/joy/Typography';
 import Paper from '@mui/material/Paper';
 import Header from '../home/header';
+import axios from 'axios';
 function createData(Question, ReplyUsersInfo, NoReplyUsers, NoViews) {
     return { Question, ReplyUsersInfo, NoReplyUsers, NoViews };
 }
@@ -42,7 +44,36 @@ const rows = [
     // createData('Eclair', 262, 16.0, 24, 6.0),
 ];
 
+
+
+
 export default function QuestionPanelReview() {
+    const [userposts, setUserposts] = useState([]);
+
+    useEffect(() => {
+        async function callAllPosts() {
+            const token = localStorage.getItem('token');
+            const config = {
+                headers: {
+                    'authorisation': `Bearer ${token}`
+                }
+            }
+
+            await axios.get('http://localhost:4001/api/v1/all_posts/', config).then((res) => {
+                if (res.data.success) {
+                    setUserposts(res.data.posts)
+                }
+                console.log('all posts', res.data.posts)
+            })
+        }
+
+        callAllPosts();
+    }, [])
+
+    const showmeuserposts = () => {
+        console.log('userposts', userposts)
+    }
+
 
 
     return (<>
@@ -60,29 +91,29 @@ export default function QuestionPanelReview() {
                 </TableHead>
 
                 <TableBody>
-                    {rows.map((row) => (
-                        <TableRow key={row.Question}>
+                    {userposts.map((post) => (
+                        <TableRow key={post._id}>
                             <TableCell component="th" scope="row" sx={{ fontSize: 17 }}>
                                 <Typography fontWeight="xl">
-                                    {row.Question}
-
+                                    {post.MainQuestion}
                                 </Typography>
                             </TableCell>
                             <TableCell align="right" sx={{ display: 'flex' }}>
-                                {row.ReplyUsersInfo.map((e) => {
-                                    return <img src={e} alt="image not found" className='w-10 h-10 rounded-full mx-1' />
+                                {post.comments[0].content.map((e) => {
+                                    return <img src={e.user.profilePic.url} alt="image not found" className='w-10 h-10 rounded-full mx-1' />
                                 })}
                             </TableCell>
+
                             <TableCell align="right">
                                 <Typography fontWeight="xl">
-                                    {row.NoReplyUsers}
+                                    {post.comments[0].content.length}
 
                                 </Typography>
 
                             </TableCell>
                             <TableCell align="right">
                                 <Typography fontWeight="xl">
-                                    {row.NoViews}
+                                    {post.comments[0].content.length * 3}
 
 
                                 </Typography>
@@ -90,6 +121,8 @@ export default function QuestionPanelReview() {
                         </TableRow>
                     ))}
                 </TableBody>
+
+                <button onClick={showmeuserposts}>click me </button>
             </Table>
         </TableContainer>
     </>

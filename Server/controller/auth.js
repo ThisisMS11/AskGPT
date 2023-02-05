@@ -40,7 +40,7 @@ exports.login = asyncHandler(async (req, res, next) => {
 
 
 exports.register = asyncHandler(async (req, res, next) => {
-    console.log('registration body : ',req.body)
+    // console.log('registration body : ',req.body)
     const { name, email, password, image } = req.body;
 
     let newuser = await User.findOne({ email: req.body.email });
@@ -116,7 +116,7 @@ exports.verifyEmail = asyncHandler(async (req, res, next) => {
     const verificationToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
 
     const user = await User.findOne({ verificationToken: verificationToken, verificationTokenExpire: { $gt: Date.now() } }).select('+password');
-    console.log(user)
+    // console.log(user)
 
 
     user.isVerified = true;

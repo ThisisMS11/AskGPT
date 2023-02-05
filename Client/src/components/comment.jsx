@@ -1,12 +1,15 @@
 import { Avatar, Box, List, ListItem, ListItemAvatar, ListItemText, Typography, Button, Checkbox } from '@mui/material'
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'; import FavoriteIcon from '@mui/icons-material/Favorite';
 import Quill from 'quill'
 import "quill/dist/quill.snow.css"
-function comment({ author, commentData, time, profilePic }) {
+import axios from 'axios';
+import Badge from '@mui/material/Badge';
+import { useParams } from 'react-router-dom';
+import { display } from '@mui/system';
+function comment({ author, commentData, time, profilePic, commentID, likesIDs, userid }) {
 
   function convertDate(date) {
-    console.log(date)
     let newDate = date.split('-');
     let year = newDate[0];
     let month = newDate[1];
@@ -16,15 +19,14 @@ function comment({ author, commentData, time, profilePic }) {
 
   const CommentRef = useRef(null);
 
+  const [checked, setChecked] = useState(false);
+  const [likeIDs, setLikeIDs] = useState(likesIDs);
+  const [likesno, setLikesno] = useState(likeIDs.length);
+
+
   useEffect(() => {
-    console.log("our commentData : ", JSON.parse(commentData));
     //! this will give us access to the element to which we have assigned the ref
     const CommentContainer = document.getElementById('PostComment');
-
-    console.log(CommentContainer);
-
-
-
 
     // !Setting the data over the react-quill editor like this Bingo.
 
@@ -43,7 +45,62 @@ function comment({ author, commentData, time, profilePic }) {
     //! Magic lines.
 
     q.setContents(JSON.parse(commentData))
-  }, [])
+
+
+    // console.log('likesIDs : ', likesIDs, 'userid : ', userid);
+
+
+    if (likeIDs.includes(userid)) {
+      setChecked(true);
+    }
+  }, [likesno, checked, likeIDs])
+
+
+  const { id: postId } = useParams();
+
+  const handleOpinion = async () => {
+    const token = localStorage.getItem('token');
+    console.log("token in like dislike : ", token);
+
+
+    const config = {
+      headers: {
+        authorisation: `Bearer ${token}`
+      }
+    }
+    if (checked) {
+      console.log('dislike was clicked')
+
+      //! For Disliking a comment
+      await axios.put(`http://localhost:4001/api/v1/posts/unlike/${commentID}/${postId}`, config)
+        .then((res) => {
+          // ! In response we are getting data specific to that comment only like comment_data user_id likes_id etc. (not the whole comment instance);
+
+          console.log('dislike response :', res.data.data[0].likes)
+          if (res.data.success) {
+
+            setChecked(false)
+            setLikeIDs(res.data.data[0].likes)
+            setLikesno(res.data.data[0].likes.length);
+
+          }
+        })
+    }
+
+    else {
+      //! For liking a comment
+      console.log('like was clicked')
+      await axios.put(`http://localhost:4001/api/v1/posts/like/${commentID}/${postId}`, config)
+        .then((res) => {
+          console.log('like response :', res.data.data[0].likes);
+          if (res.data.success) {
+            setChecked(true)
+            setLikeIDs(res.data.data[0].likes)
+            setLikesno(res.data.data[0].likes.length);
+          }
+        });
+    }
+  }
 
 
   return (
@@ -62,7 +119,7 @@ function comment({ author, commentData, time, profilePic }) {
                 variant="body2"
                 color="text.primary"
               >
-            {convertDate(time)}
+                {convertDate(time)}
               </Typography>
             </React.Fragment>
           }
@@ -84,11 +141,16 @@ function comment({ author, commentData, time, profilePic }) {
           1 Reply ^
         </Button>
         <List >
-          <Checkbox
-            icon={<FavoriteBorderIcon />}
-            checkedIcon={<FavoriteIcon sx={{ color: "red" }} />}
-            name="checkedH"
-          />
+
+          <Badge color="secondary" badgeContent={likesno} sx={likesIDs.length > 0 ? display : 'none'}>
+            <Checkbox
+              icon={<FavoriteBorderIcon />}
+              checkedIcon={<FavoriteIcon sx={{ color: "red" }} />}
+              name="checked"
+              checked={checked}
+              onClick={handleOpinion}
+            />
+          </Badge>
 
         </List>
       </List>

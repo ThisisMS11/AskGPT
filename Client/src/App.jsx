@@ -31,7 +31,7 @@ function App() {
 
           const user1 = await axios.get('http://localhost:4001/api/v1/user/')
 
-          console.log(user1)
+          // console.log(user1)
           if (user1.data.data.user) {
             auth.setUser(user1.data.data);
 

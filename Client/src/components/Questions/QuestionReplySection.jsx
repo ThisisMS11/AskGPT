@@ -3,7 +3,7 @@ import Quill from 'quill'
 import "quill/dist/quill.snow.css"
 import "./styles/styles.css"
 import "./styles/QuestionReply.css"
-import { useParams } from 'react-router-dom'
+import { json, useParams } from 'react-router-dom'
 import { eventWrapper } from '@testing-library/user-event/dist/utils'
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
@@ -45,6 +45,7 @@ const QuestionReplySection = () => {
     const { id: postID } = useParams();
     const [post, setPost] = useState([]);
     const [comments, setComments] = useState([]);
+    const [userID, setUserID] = useState([]);
 
 
     // quill text editor
@@ -90,7 +91,7 @@ const QuestionReplySection = () => {
         })
 
         // !Adding a class to the quill editor so that we can style it.
-        console.log('The Entire wrapper : ', wrapper);
+        // console.log('The Entire wrapper : ', wrapper);
 
         wrapper.classList.add('QuestionReplySection__quill-wrapper');
 
@@ -184,12 +185,13 @@ const QuestionReplySection = () => {
     }
 
 
+
     useEffect(() => {
         async function postcall() {
             await axios.get(`http://localhost:4001/api/v1/posts/${postID}`)
                 .then((res) => {
 
-                    console.log('details about this post ', res.data.data)
+                    // console.log('details about this post ', res.data.data)
 
                     setPost(res.data.data);
 
@@ -200,7 +202,7 @@ const QuestionReplySection = () => {
                     //! this will give us access to the element to which we have assigned the ref
                     const postContainer = document.getElementById('PostClicked');
 
-                    console.log(postContainer);
+                    // console.log(postContainer);
 
 
 
@@ -232,22 +234,20 @@ const QuestionReplySection = () => {
             axios.get(`http://localhost:4001/api/v1/posts/comment/${postID}`)
                 .then((res) => {
                     console.log('comments => ', res.data);
+
+                    console.log('the comment instance id is : ', res.data.comments[0].content);
+
                     setComments(res.data.comments[0].content);
                 })
         }
 
         commentcall();
 
-
-
+        let user = localStorage.getItem('userinfo');
+        user = JSON.parse(user);
+        setUserID(user._id)
 
     }, [])
-
-
-
-
-
-
 
     return (
         <>
@@ -358,7 +358,11 @@ const QuestionReplySection = () => {
                                     time: e.createdAt.split('T')[0],
                                     commentData: JSON.stringify(e.comment),
                                     key: index,
-                                    profilePic: e.user.profilePic.url
+                                    profilePic: e.user.profilePic.url,
+                                    // !here commentID is the id of the comment Object and not comment itself.
+                                    commentID: e._id,
+                                    likesIDs: e.likes,
+                                    userid: userID
                                 }
 
                                 return <Comment {...{ ...topass }} />
@@ -369,40 +373,6 @@ const QuestionReplySection = () => {
                 </div>
 
             </div>
-
-
-            {/* <-------------------------------------------------------Drawer------------------------------------------------------> */}
-
-            {/* <Drawer
-                anchor='right'
-                open={!drawerstate}
-                onClose={() => setDrawerstate(!drawerstate)}
-            >
-                <div className='container  border-red-400 mx-auto' ref={ReplyWrapper}></div>
-
-                                        <div onClick={SubmitComment} ref={saveblogwithcardsubmitref} className='text-center hidden  border-black rounded-lg mx-auto bg-black text-white py-1 cursor-pointer w-[8.5in]' >Save Draft</div>
-                <div className='m-10 flex flex-col gap-4'>
-
-                    <TextField
-                        id="outlined-multiline-static"
-                        label="Your Reply"
-                        multiline
-                        rows={10}
-                        sx={{ width: 400 }}
-                        onChange={handleChange}
-                    />
-                    <Button variant="contained" endIcon={<SendIcon />} onClick={SubmitComment}>
-                        Send
-                    </Button>
-                </div>
-
-            </Drawer> */}
-
-
-
-
-            {/* <button onClick={viewpost}>click me</button> */}
-
 
         </>
     )

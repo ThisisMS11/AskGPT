@@ -22,7 +22,6 @@ const Login = () => {
     event.preventDefault()
     const userDetails = { email, password };
 
-    console.log('Input fields values => ', userDetails);;
 
     const config = {
       headers: {
@@ -34,7 +33,7 @@ const Login = () => {
     await axios.post('http://localhost:4001/api/v1/user/login', userDetails, config)
       .then((res) => {
         //! data is an object with token and status(true/false);
-        console.log('loggin response => ', res);
+        // console.log('loggin response => ', res);
 
         if (res.data.status && res.data.token) {
 
@@ -43,7 +42,7 @@ const Login = () => {
           localStorage.setItem('token', res.data.token)
 
           const getuserres = auth.GetUserInfo(res.data.token);
-          console.log(getuserres);
+          // console.log(getuserres);
 
           if (getuserres) {
             alert('User Information Sucessfully saved in LocalStorage.');
