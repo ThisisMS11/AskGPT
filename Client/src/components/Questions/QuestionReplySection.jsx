@@ -191,22 +191,14 @@ const QuestionReplySection = () => {
             await axios.get(`http://localhost:4001/api/v1/posts/${postID}`)
                 .then((res) => {
 
-                    // console.log('details about this post ', res.data.data)
+                    console.log('details about this post ', res.data.data)
 
                     setPost(res.data.data);
-
-
                     // console.log('clicked post data : ', res.data.data.data);
-
-
                     //! this will give us access to the element to which we have assigned the ref
                     const postContainer = document.getElementById('PostClicked');
 
-                    // console.log(postContainer);
-
-
-
-
+                    // console.log(postContainer
                     // !Setting the data over the react-quill editor like this Bingo.
 
                     if (PostRef.current == null) return;
@@ -362,7 +354,8 @@ const QuestionReplySection = () => {
                                     // !here commentID is the id of the comment Object and not comment itself.
                                     commentID: e._id,
                                     likesIDs: e.likes,
-                                    userid: userID
+                                    userid: userID,// userid of the user who is logged in.
+                                    authorid: e.user._id // userid of the author of the comment.
                                 }
 
                                 return <Comment {...{ ...topass }} />

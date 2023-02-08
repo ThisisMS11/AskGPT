@@ -4,10 +4,17 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'; import Favo
 import Quill from 'quill'
 import "quill/dist/quill.snow.css"
 import axios from 'axios';
+import DeleteIcon from '@mui/icons-material/Delete';
 import Badge from '@mui/material/Badge';
 import { useParams } from 'react-router-dom';
 import { display } from '@mui/system';
-function comment({ author, commentData, time, profilePic, commentID, likesIDs, userid }) {
+import { usecomment } from './context/CommentContext';
+
+
+function comment({ author, commentData, time, profilePic, commentID, likesIDs, userid, authorid }) {
+
+
+
 
   function convertDate(date) {
     let newDate = date.split('-');
@@ -22,6 +29,7 @@ function comment({ author, commentData, time, profilePic, commentID, likesIDs, u
   const [checked, setChecked] = useState(false);
   const [likeIDs, setLikeIDs] = useState(likesIDs);
   const [likesno, setLikesno] = useState(likeIDs.length);
+  const [DeleteIcondisplay, setDeleteIcondisplay] = useState('none');
 
 
   useEffect(() => {
@@ -49,10 +57,23 @@ function comment({ author, commentData, time, profilePic, commentID, likesIDs, u
 
     // console.log('likesIDs : ', likesIDs, 'userid : ', userid);
 
-
+    // console.log('likeIDs : ', likeIDs, 'userid : ', userid);
     if (likeIDs.includes(userid)) {
       setChecked(true);
     }
+
+
+    // for knowing whether any comment is been written by the logged in user or not.
+    let user = localStorage.getItem('userinfo');
+    user = JSON.parse(user);
+    // setUserID(user._id)
+    if (authorid === user._id) {
+      console.log('I have wriiten this comment');
+      setDeleteIcondisplay('block');
+    } else {
+      console.log("i haven't written this comment")
+    }
+
   }, [likesno, checked, likeIDs])
 
 
@@ -102,6 +123,12 @@ function comment({ author, commentData, time, profilePic, commentID, likesIDs, u
     }
   }
 
+  // for deleting a comment
+  const customcomment = usecomment();
+  const HandleDelete = () => {
+    customcomment.HandleDeleteComment(postId, commentID);
+  }
+
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", padding: '4px', borderRadius: '4px', marginLeft: "16px", bgcolor: 'white', boxShadow: '0 0 5px 0 rgba(0, 0, 0, 0.5)', width: '97%' }}>
@@ -140,7 +167,9 @@ function comment({ author, commentData, time, profilePic, commentID, likesIDs, u
         <Button variant="span" color="primary">
           1 Reply ^
         </Button>
-        <List >
+        <List sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+
+          <DeleteIcon onClick={HandleDelete} sx={{ cursor: 'pointer', marginX: 1, display: DeleteIcondisplay }} />
 
           <Badge color="secondary" badgeContent={likesno} sx={likesIDs.length > 0 ? display : 'none'}>
             <Checkbox
@@ -151,6 +180,7 @@ function comment({ author, commentData, time, profilePic, commentID, likesIDs, u
               onClick={handleOpinion}
             />
           </Badge>
+
 
         </List>
       </List>

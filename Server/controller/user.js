@@ -14,7 +14,6 @@ exports.uploadProfilePic = asyncHandler(async (req, res, next) => {
     }
 
     const file = req.files.files;
-    console.log(file);
     if (!file.mimetype.startsWith('image')) {
         next(new errorResponse(`Please upload an image file`, 401));
     }

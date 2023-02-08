@@ -4,36 +4,6 @@ import ImgMediaCard from "./card";
 import axios from "axios";
 
 const Posts = () => {
-  const a = [
-    {
-      id: 1,
-      username: "yogesh",
-      userimage:
-        "https://img.freepik.com/premium-vector/flat-winter-season-celebration-background_23-2149895776.jpg?w=900",
-      question: "What is the best way to get a coffee?",
-      comments: "12",
-      date: "2121-21-8",
-    },
-    {
-      id: 2,
-      username: "sukur",
-      userimage:
-        "https://img.freepik.com/premium-vector/flat-winter-season-celebration-background_23-2149895776.jpg?w=900",
-      question: "what is really the best way to do ? ",
-      comments: "122",
-      date: "2121-21-8",
-    },
-    {
-      id: 3,
-      username: "bossk",
-      userimage:
-        "https://img.freepik.com/premium-vector/flat-winter-season-celebration-background_23-2149895776.jpg?w=900",
-      question: "what is reactjs ?",
-      comments: "123",
-      date: "2121-21-8",
-    },
-  ];
-
   // here will come the axios api call to get all the posts data. 
 
   const [Posts, setPosts] = useState([]);
@@ -43,10 +13,8 @@ const Posts = () => {
     async function call() {
       await axios.get('http://localhost:4001/api/v1/all_posts/every')
         .then((data) => {
-          
-
+          console.log(data.data)
           console.log('All posts :', data.data.posts);
-
           setPosts(data.data.posts);
         })
     }
