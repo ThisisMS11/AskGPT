@@ -52,7 +52,8 @@ const Header = () => {
             if (response.data.status == 'success') {
                 alert('logout successful');
                 //* if logout is successful nullifying the localstorage token and user info that has been set.
-                localStorage.setItem('token', null);
+                // localStorage.setItem('token', null);
+                localStorage.removeItem('token');
                 // localStorage.setItem('userinfo', null);
                 localStorage.removeItem('userinfo');
                 setUser(null);
@@ -75,7 +76,7 @@ const Header = () => {
         navigate('/')
     }
 
-    const handlePanel=()=>{
+    const handlePanel = () => {
         navigate('/panel')
     }
 
