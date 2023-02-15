@@ -7,6 +7,9 @@ const path = require('path');
 const fs = require('fs');
 const cloudinary = require('../utils/cloudinary');
 
+const Redis = require("ioredis");
+const redis = new Redis();
+
 exports.createNewPost = asyncHandler(async (req, res, next) => {
 
     // !to get the user id using middleware protect.
@@ -169,7 +172,7 @@ exports.deleteComment = asyncHandler(async (req, res, next) => {
     }
 
     // ! only admin and the respective user is supposed to delete the comment
-    
+
     if (comment.content[commentIndex].user != req.user.id && req.user.role !== 'admin') {
         return next(new errorResponse(`Not authorized to delete the comment`, 401));
     }
@@ -183,16 +186,41 @@ exports.deleteComment = asyncHandler(async (req, res, next) => {
 
 // To get the details of a post
 exports.getPostDetails = asyncHandler(async (req, res, next) => {
-    let data = await Post.findById(req.params.id).populate([
-        { path: 'user', select: 'name profilePic.url' },
-    ]);;
 
-    //! finding post instance in Comment modal as we know that for each post there exists one comment instance in the comment collection containing all the comments info for that specific post.
-    if (!data) {
-        next(new errorResponse(`No post found with id ${req.params.id}`, 401));
-    }
+    const postID = req.params.id;
 
-    res.status(200).send({ success: true, data: [{ MainQuestion: data.MainQuestion, data: data.data, createdAt: data.createdAt, user: data.user }] });
+    const key = `post/${postID}`
+
+    redis.get(key, async (err, postres) => {
+
+        if (err) console.log(err);
+
+        if (postres) {
+            res.json(JSON.parse(postres));
+        } else {
+
+            //! if data not found in redis then setting it .
+
+            let data = await Post.findById(req.params.id).populate([
+                { path: 'user', select: 'name profilePic.url' },
+            ]);;
+
+            //! finding post instance in Comment modal as we know that for each post there exists one comment instance in the comment collection containing all the comments info for that specific post.
+            if (!data) {
+                next(new errorResponse(`No post found with id ${req.params.id}`, 401));
+            }
+
+            const jsonres = { success: true, data: [{ MainQuestion: data.MainQuestion, data: data.data, createdAt: data.createdAt, user: data.user }] };
+
+            redis.set(key, JSON.stringify(jsonres), (err, reply) => {
+                if (err) console.log(err);
+
+                console.log("Cache Miss with response -> ", reply);
+            })
+
+            res.status(200).send(jsonres);
+        }
+    })
 })
 
 
@@ -263,43 +291,78 @@ exports.getCommentDetails = asyncHandler(async (req, res, next) => {
 
 //! To Get All the comments for any given postid 
 exports.getAllComments = asyncHandler(async (req, res, next) => {
-    let comments = await Comment.find({ post: req.params.postId }).populate([
+    const postID = req.params.postId;
+
+    console.log("Redis Miss");
+
+
+    const key = `comments?postID=${postID}`;
+
+    let comments = await Comment.find({ post: postID }).populate([
         { path: 'content.user', select: 'name profilePic.url' },
     ])
-    res.status(200).send({ success: true, comments });
 
+    let responseobject = { success: true, comments };
+    redis.set(key, JSON.stringify(responseobject), (err, stu) => {
+        if (err) console.log(err);
+        else console.log(stu);
+    })
+
+    res.status(200).send({ success: true, comments });
 })
 
 
 exports.getEveryPosts = asyncHandler(async (req, res, next) => {
 
-    //! here populating the post virtual attribute comments which signifies all the comments that are posted on the post specifically.
+    const rediskey = 'allposts';
 
-    let posts = await Post.find().select('-data').populate([
-        // ! Writing optimized code only asking for essential data to reduce app time.
-        { path: 'comments', select: 'content._id id' },
-        //! you can give multiple keys to includes by giving a space in between like this here name , profilePic will be included one while populating the user in post modal.
-        { path: 'user', select: 'name profilePic.url' }
+    redis.get(rediskey, async (err, reply) => {
+        if (err) console.log(err);
 
-    ]);
-    // console.log(posts)
-    // !this data response will only send the comments array with the comment data and no more stuff related to the comments which posts does so it can be considered to a shorter response data 
 
-    // const data = posts.map((item) => {
-    //     return {
-    //         MainQuestion: item.MainQuestion,
-    //         data: item.data,
-    //         created_at: item.createdAt,
-    //         comments: item.comments.map((item) => {
-    //             return item.content.map((item) => {
-    //                 return item.comment;
-    //             })
-    //         }),
-    //         // likes: item.likes.map((item) => {
-    //         //     return item.likes.length;
-    //         // })
-    //     }
-    // })
-    res.status(200).send({ success: true, posts });
 
+        if (reply != null) {
+            return res.json(JSON.parse(reply));
+        } else {
+
+            //! here populating the post virtual attribute comments which signifies all the comments that are posted on the post specifically.
+
+            let posts = await Post.find().select('-data').populate([
+                // ! Writing optimized code only asking for essential data to reduce app time.
+                { path: 'comments', select: 'content._id id' },
+                //! you can give multiple keys to includes by giving a space in between like this here name , profilePic will be included one while populating the user in post modal.
+                { path: 'user', select: 'name profilePic.url' }
+
+            ]);
+            // console.log(posts)
+            // !this data response will only send the comments array with the comment data and no more stuff related to the comments which posts does so it can be considered to a shorter response data 
+
+            // const data = posts.map((item) => {
+            //     return {
+            //         MainQuestion: item.MainQuestion,
+            //         data: item.data,
+            //         created_at: item.createdAt,
+            //         comments: item.comments.map((item) => {
+            //             return item.content.map((item) => {
+            //                 return item.comment;
+            //             })
+            //         }),
+            //         // likes: item.likes.map((item) => {
+            //         //     return item.likes.length;
+            //         // })
+            //     }
+            // })
+
+            const jsonres = { success: true, posts };
+
+            redis.set(rediskey, JSON.stringify(jsonres), (err, res) => {
+                if (err) console.log(err);
+
+                if (res) {
+                    console.log("Cache Miss with response : ", res);
+                }
+            })
+            res.status(200).send(jsonres);
+        }
+    })
 })
