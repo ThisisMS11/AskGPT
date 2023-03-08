@@ -2,6 +2,7 @@ import { useState } from 'react'
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/auth'
+import { useToast } from '../context/toast'
 import axios from 'axios'
 import { useLocation } from 'react-router-dom'
 
@@ -9,6 +10,8 @@ const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('')
   const location = useLocation();
+
+  const toaster = useToast();
 
   const redirectPath = location.state?.path || '/'
 
@@ -37,7 +40,6 @@ const Login = () => {
 
         if (res.data.status && res.data.token) {
 
-          alert('login Successful');
 
           localStorage.setItem('token', res.data.token)
 
@@ -45,13 +47,12 @@ const Login = () => {
           // console.log(getuserres);
 
           if (getuserres) {
-            alert('User Information Sucessfully saved in LocalStorage.');
             navigate('/');
+            toaster.successnotify("Login Successful")
           }
         }
-        else {
-          alert('please login with good credentials');
-        }
+      }).catch((error) => {
+        toaster.errornotify(error);
       })
 
   }

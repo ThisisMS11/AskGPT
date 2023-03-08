@@ -117,6 +117,8 @@ exports.unlike = asyncHandler(async (req, res, next) => {
 //! To create new comment over the existing post.
 exports.comment = asyncHandler(async (req, res, next) => {
 
+    console.log(req.user);
+
     const post = await Post.findById(req.params.postId);
 
     if (!post) {
@@ -126,7 +128,23 @@ exports.comment = asyncHandler(async (req, res, next) => {
     comment.content.push({ user: req.user._id, comment: req.body.comment });
     comment.save();
 
-    res.status(200).send({ success: true, data: comment });
+    let { createdAt, likes, _id } = comment.content[comment.content.length - 1];
+
+    let user = {
+        name: req.user.name,
+        profilePic: { url: req.user.profilePic.url },
+        _id: req.user._id
+    }
+
+    const newcomment = {
+        comment: req.body.comment,
+        createdAt: createdAt,
+        likes: likes,
+        _id: _id,
+        user: user
+    }
+
+    res.status(200).send({ success: true, data: newcomment });
 })
 
 //! Editing a comment
@@ -169,7 +187,7 @@ exports.deleteComment = asyncHandler(async (req, res, next) => {
     }
 
     // ! only admin and the respective user is supposed to delete the comment
-    
+
     if (comment.content[commentIndex].user != req.user.id && req.user.role !== 'admin') {
         return next(new errorResponse(`Not authorized to delete the comment`, 401));
     }
@@ -198,6 +216,8 @@ exports.getPostDetails = asyncHandler(async (req, res, next) => {
 
 //! to get all the posts of the user
 exports.getAllPosts = asyncHandler(async (req, res, next) => {
+
+
     let posts = await Post.find({ user: req.user.id }).populate([
         {
             path: 'comments', select: 'content id',

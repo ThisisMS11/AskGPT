@@ -15,11 +15,25 @@ import { useLocation, useNavigate } from 'react-router'
 
 import ValidationState from './components/context/ValidationState'
 import PostQuestion from './components/Questions/PostQuestion'
+
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+import { useToast } from './components/context/toast'
+
+
+
+
+
 function App() {
   const auth = useAuth();
+  const toaster = useToast();
+
   const location = useLocation();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
+
+
 
   useEffect(() => {
 
@@ -56,8 +70,22 @@ function App() {
 
       <ValidationState>
 
+
+        <ToastContainer
+          position='top-center'
+          autoClose={1500}
+        />
+
+
+
+
         <Routes>
-          <Route path="/replies/:id" element={<Loading loading={loading}><AuthrequireLogin><replyComment /></AuthrequireLogin></Loading>} />
+          <Route path="/replies/:id" element={<Loading loading={loading}>
+            <AuthrequireLogin>
+              <replyComment />
+            </AuthrequireLogin>
+          </Loading>} />
+
           <Route path="/" element={<Home />} />
           <Route path='/login' element={<Login />} />
 
@@ -72,6 +100,7 @@ function App() {
         </Routes>
 
       </ValidationState>
+
 
     </div>
   )

@@ -8,7 +8,11 @@ import React from 'react';
 import axios from 'axios'
 import { useAuth } from '../context/auth'
 import { useNavigate } from 'react-router-dom';
-import { setOptions } from 'filepond';
+import LoadingBar from 'react-top-loading-bar'
+import { useToast } from '../context/toast';
+import sundark from '../../assets/sun-dark.svg';
+import moondark from '../../assets/moon-dark.svg';
+
 
 const Header = () => {
     const navigate = useNavigate();
@@ -18,6 +22,8 @@ const Header = () => {
     const [pic, setPic] = useState(notloggedinpic);
 
     const [user, setUser] = useState(null);
+
+    const toaster=useToast();
 
 
     const auth = useAuth();
@@ -50,7 +56,10 @@ const Header = () => {
             console.log(response);
 
             if (response.data.status == 'success') {
-                alert('logout successful');
+                // alert('logout successful');
+
+                toaster.successnotify("Logout Successful");
+
                 //* if logout is successful nullifying the localstorage token and user info that has been set.
                 // localStorage.setItem('token', null);
                 localStorage.removeItem('token');
@@ -63,6 +72,8 @@ const Header = () => {
             }
         }).catch((err) => {
             console.log('logout error => ', err);
+            toaster.errornotify("Logout Failure");
+
         })
 
 
@@ -96,45 +107,64 @@ const Header = () => {
 
 
     return (
-        <div className={classes.header}>
-            <img className={`${classes.image1} cursor-pointer`} src="https://images.unsplash.com/photo-1508921912186-1d1a45ebb3c1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8cGhvdG98ZW58MHx8MHx8&w=1000&q=80" onClick={movetohome}></img>
+        <>
+            <LoadingBar
+                color='#0080ff'
+                height={2}
+                progress={100}
+            />
+            
+            <div className={classes.header}>
+                <img className={`${classes.image1} cursor-pointer`} src="https://images.unsplash.com/photo-1508921912186-1d1a45ebb3c1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8cGhvdG98ZW58MHx8MHx8&w=1000&q=80" onClick={movetohome}></img>
 
 
-            <div className={`${classes.search}`}>
+                <div className={`${classes.search}`}>
 
 
 
-                <input className={classes.input} placeholder="Search your question"></input>
-                <div className={classes.searchIcon}>
-                    <FontAwesomeIcon className={classes.icon} icon={faSearch} />
+                    <input className={classes.input} placeholder="Search your question"></input>
+                    <div className={classes.searchIcon}>
+                        <FontAwesomeIcon className={classes.icon} icon={faSearch} />
+                    </div>
+
                 </div>
+
+
+                {/* mode shifting stuff */}
+
+                <img src={sundark} alt="Image not found" className='w-8 h-8 cursor-pointer' />
+                <img src={moondark} alt="Image not found" className='w-8 h-8 cursor-pointer' />
+
+
+
+                <img className={classes.image2} src={pic} onClick={handleClick}></img>
+                {/* <img className={classes.image2} src={auth.user.profilePic.url} onClick={handleClick}></img> */}
+                
+
+                <Menu
+                    id="demo-positioned-menu"
+                    aria-labelledby="demo-positioned-button"
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={handleClose}
+                    anchorOrigin={{
+                        vertical: 'top',
+                        horizontal: 'left',
+                    }}
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'left',
+                    }}
+                >
+                    <MenuItem onClick={handleClose1}>Profile</MenuItem>
+                    {user ? <div><MenuItem onClick={handlelogout}>Logout</MenuItem>
+                        <MenuItem onClick={handlePanel}>Review Asked Questions</MenuItem> </div> :
+                        <MenuItem onClick={handleClose3}>LogIn</MenuItem>}
+                </Menu>
 
             </div>
 
-            <img className={classes.image2} src={pic} onClick={handleClick}></img>
-            {/* <img className={classes.image2} src={auth.user.profilePic.url} onClick={handleClick}></img> */}
-
-            <Menu
-                id="demo-positioned-menu"
-                aria-labelledby="demo-positioned-button"
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
-                anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'left',
-                }}
-                transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'left',
-                }}
-            >
-                <MenuItem onClick={handleClose1}>Profile</MenuItem>
-                {user ? <div><MenuItem onClick={handlelogout}>Logout</MenuItem>
-                    <MenuItem onClick={handlePanel}>Review Asked Questions</MenuItem> </div> :
-                    <MenuItem onClick={handleClose3}>LogIn</MenuItem>}
-            </Menu>
-        </div>
+        </>
     )
 }
 

@@ -22,6 +22,7 @@ import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
 import axios from 'axios';
 import Header from '../home/header'
+import { useToast } from '../context/toast'
 
 
 
@@ -46,6 +47,8 @@ const QuestionReplySection = () => {
     const [post, setPost] = useState([]);
     const [comments, setComments] = useState([]);
     const [userID, setUserID] = useState([]);
+
+    const toaster=useToast();
 
 
     // quill text editor
@@ -131,7 +134,7 @@ const QuestionReplySection = () => {
 
     //! Here i can make the api call for adding the comment to the database.
     const SubmitComment = async () => {
-        console.log("quill content : ", quill.getContents().ops);
+        // console.log("quill content : ", quill.getContents().ops);
 
         const config = {
             headers: {
@@ -146,6 +149,11 @@ const QuestionReplySection = () => {
         await axios.put(`http://localhost:4001/api/v1/posts/comment/${postID}`, commentBody, config)
             .then((res) => {
                 console.log('submitted comment => ', res.data);
+                if (res.data.success) {
+                    setComments([...comments, res.data.data])
+                    toaster.successnotify("Comment Added");
+                    quill.setText("");
+                }
             }).catch((err) => { console.log(err) })
 
     }
@@ -355,7 +363,9 @@ const QuestionReplySection = () => {
                                     commentID: e._id,
                                     likesIDs: e.likes,
                                     userid: userID,// userid of the user who is logged in.
-                                    authorid: e.user._id // userid of the author of the comment.
+                                    authorid: e.user._id, // userid of the author of the comment.
+                                    comments:comments,
+                                    setComments:setComments
                                 }
 
                                 return <Comment {...{ ...topass }} />

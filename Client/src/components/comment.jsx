@@ -9,9 +9,10 @@ import Badge from '@mui/material/Badge';
 import { useParams } from 'react-router-dom';
 import { display } from '@mui/system';
 import { usecomment } from './context/CommentContext';
+import { useToast } from './context/toast';
 
 
-function comment({ author, commentData, time, profilePic, commentID, likesIDs, userid, authorid }) {
+function comment({ author, commentData, time, profilePic, commentID, likesIDs, userid, authorid, comments, setComments }) {
 
 
 
@@ -25,7 +26,7 @@ function comment({ author, commentData, time, profilePic, commentID, likesIDs, u
   }
 
   const CommentRef = useRef(null);
-
+  const toaster = useToast();
   const [checked, setChecked] = useState(false);
   const [likeIDs, setLikeIDs] = useState(likesIDs);
   const [likesno, setLikesno] = useState(likeIDs.length);
@@ -126,7 +127,15 @@ function comment({ author, commentData, time, profilePic, commentID, likesIDs, u
   // for deleting a comment
   const customcomment = usecomment();
   const HandleDelete = () => {
-    customcomment.HandleDeleteComment(postId, commentID);
+    if (customcomment.HandleDeleteComment(postId, commentID)) {
+      toaster.successnotify("Deletion Successfull");
+
+      const updatedcomments = comments.filter((comment) => comment._id !== commentID);
+
+      console.log('updatedcomments : ',updatedcomments);
+      setComments(updatedcomments);
+
+    };
   }
 
 

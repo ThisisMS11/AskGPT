@@ -1,8 +1,11 @@
 import { useContext, createContext } from "react";
 import axios from "axios";
+import { useToast } from "./toast";
 const commentContext = createContext();
 
 export const CommentProvider = ({ children }) => {
+
+    const toaster=useToast();
 
     const HandleDeleteComment = async (postID, commentID) => {
         const token = localStorage.getItem('token');
@@ -16,9 +19,7 @@ export const CommentProvider = ({ children }) => {
         if (postID && commentID) {
             await axios.delete(`http://localhost:4001/api/v1/posts/comment/${postID}/${commentID}`, config)
                 .then((res) => {
-                    if (res.data.success) {
-                        alert(`${res.data.data} Comment Deleted Successfully`)
-                    }
+                    if (res.data.success) return true;
                 })
                 .catch((err) => {
                     console.log(err);
