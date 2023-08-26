@@ -84,7 +84,6 @@ export default function QuestionPanelReview() {
                 <TableHead>
                     <TableRow>
                         <TableCell sx={{ fontSize: 25, opacity: '0.8' }}>Topic</TableCell>
-                        <TableCell align="right" sx={{ fontSize: 25, opacity: '0.8' }}>Users</TableCell>
                         <TableCell align="right" sx={{ fontSize: 25, opacity: '0.8' }}>Replies</TableCell>
                         <TableCell align="right" sx={{ fontSize: 25, opacity: '0.8' }}>Views</TableCell>
                     </TableRow>
@@ -98,11 +97,7 @@ export default function QuestionPanelReview() {
                                     {post.MainQuestion}
                                 </Typography>
                             </TableCell>
-                            <TableCell align="right" sx={{ display: 'flex' }}>
-                                {post.comments[0].content.map((e) => {
-                                    return <img src={e.user.profilePic.url} alt="image not found" className='w-10 h-10 rounded-full mx-1' />
-                                })}
-                            </TableCell>
+                      
 
                             <TableCell align="right">
                                 <Typography fontWeight="xl">

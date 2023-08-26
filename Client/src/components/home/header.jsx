@@ -105,6 +105,10 @@ const Header = () => {
         }
     }, [user, pic])
 
+    const searchHandler=()=>{
+        
+    }
+
 
     return (
         <>
@@ -122,7 +126,7 @@ const Header = () => {
 
 
 
-                    <input className={classes.input} placeholder="Search your question"></input>
+                    <input className={classes.input} placeholder="Search your question" onChange={searchHandler}></input>
                     <div className={classes.searchIcon}>
                         <FontAwesomeIcon className={classes.icon} icon={faSearch} />
                     </div>
@@ -132,8 +136,8 @@ const Header = () => {
 
                 {/* mode shifting stuff */}
 
-                <img src={sundark} alt="Image not found" className='w-8 h-8 cursor-pointer' />
-                <img src={moondark} alt="Image not found" className='w-8 h-8 cursor-pointer' />
+                {/* <img src={sundark} alt="Image not found" className='w-8 h-8 cursor-pointer' />
+                <img src={moondark} alt="Image not found" className='w-8 h-8 cursor-pointer' /> */}
 
 
 

@@ -21,10 +21,6 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import { useToast } from './components/context/toast'
 
-
-
-
-
 function App() {
   const auth = useAuth();
   const toaster = useToast();

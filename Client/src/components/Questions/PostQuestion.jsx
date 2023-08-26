@@ -19,6 +19,7 @@ const PostQuestion = () => {
 
   const [quill, setQuill] = useState();
   const saveblogwithcardsubmitref = useRef(null);
+  const navigate=useNavigate();
 
   const [newpostinfo, setNewpostinfo] = useState({
     MainQuestion: '',
@@ -122,6 +123,7 @@ const PostQuestion = () => {
     await axios.post('http://localhost:4001/api/v1/posts/', postDetails, config)
       .then((res) => {
         console.log('post response => ', res)
+        navigate('/');
       }).catch((err) => {
         console.log(err);
       })
