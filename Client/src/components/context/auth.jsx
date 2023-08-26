@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
     //! to Get Access to User Information with the help of token
     const GetUserInfo = async (token) => {
 
-        await axios.get('http://localhost:4001/api/v1/user/', {
+        await axios.get('https://stack-overflow-a2dm.onrender.com/api/v1/user/', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/JSON',

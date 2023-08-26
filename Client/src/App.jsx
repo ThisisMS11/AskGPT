@@ -21,10 +21,6 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import { useToast } from './components/context/toast'
 
-
-
-
-
 function App() {
   const auth = useAuth();
   const toaster = useToast();
@@ -43,7 +39,7 @@ function App() {
         if (token) {
           axios.defaults.headers.common['authorisation'] = `Bearer ${token}`;
 
-          const user1 = await axios.get('http://localhost:4001/api/v1/user/')
+          const user1 = await axios.get('https://stack-overflow-a2dm.onrender.com/api/v1/user/')
 
           // console.log(user1)
           if (user1.data.data.user) {

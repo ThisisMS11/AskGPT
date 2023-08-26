@@ -52,7 +52,7 @@ const Header = () => {
 
         //! here we also need to make the api call to remove the cookie storing user info at server side.
 
-        await axios.get('http://localhost:4001/api/v1/user/logout').then((response) => {
+        await axios.get('https://stack-overflow-a2dm.onrender.com/api/v1/user/logout').then((response) => {
             console.log(response);
 
             if (response.data.status == 'success') {
@@ -105,6 +105,10 @@ const Header = () => {
         }
     }, [user, pic])
 
+    const searchHandler=()=>{
+        
+    }
+
 
     return (
         <>
@@ -122,7 +126,7 @@ const Header = () => {
 
 
 
-                    <input className={classes.input} placeholder="Search your question"></input>
+                    <input className={classes.input} placeholder="Search your question" onChange={searchHandler}></input>
                     <div className={classes.searchIcon}>
                         <FontAwesomeIcon className={classes.icon} icon={faSearch} />
                     </div>
@@ -132,8 +136,8 @@ const Header = () => {
 
                 {/* mode shifting stuff */}
 
-                <img src={sundark} alt="Image not found" className='w-8 h-8 cursor-pointer' />
-                <img src={moondark} alt="Image not found" className='w-8 h-8 cursor-pointer' />
+                {/* <img src={sundark} alt="Image not found" className='w-8 h-8 cursor-pointer' />
+                <img src={moondark} alt="Image not found" className='w-8 h-8 cursor-pointer' /> */}
 
 
 

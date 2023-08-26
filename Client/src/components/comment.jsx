@@ -94,7 +94,7 @@ function comment({ author, commentData, time, profilePic, commentID, likesIDs, u
       console.log('dislike was clicked')
 
       //! For Disliking a comment
-      await axios.put(`http://localhost:4001/api/v1/posts/unlike/${commentID}/${postId}`, config)
+      await axios.put(`https://stack-overflow-a2dm.onrender.com/api/v1/posts/unlike/${commentID}/${postId}`, config)
         .then((res) => {
           // ! In response we are getting data specific to that comment only like comment_data user_id likes_id etc. (not the whole comment instance);
 
@@ -112,7 +112,7 @@ function comment({ author, commentData, time, profilePic, commentID, likesIDs, u
     else {
       //! For liking a comment
       console.log('like was clicked')
-      await axios.put(`http://localhost:4001/api/v1/posts/like/${commentID}/${postId}`, config)
+      await axios.put(`https://stack-overflow-a2dm.onrender.com/api/v1/posts/like/${commentID}/${postId}`, config)
         .then((res) => {
           console.log('like response :', res.data.data[0].likes);
           if (res.data.success) {
