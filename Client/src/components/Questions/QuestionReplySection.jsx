@@ -146,7 +146,7 @@ const QuestionReplySection = () => {
             comment: quill.getContents().ops
         }
 
-        await axios.put(`http://localhost:4001/api/v1/posts/comment/${postID}`, commentBody, config)
+        await axios.put(`https://stack-overflow-a2dm.onrender.com/api/v1/posts/comment/${postID}`, commentBody, config)
             .then((res) => {
                 console.log('submitted comment => ', res.data);
                 if (res.data.success) {
@@ -172,7 +172,7 @@ const QuestionReplySection = () => {
                 'content-Type': 'val1',
                 'key2': 'val2'
             }
-            await axios.post('http://localhost:4001/question/getAns', { question: mainquestion })
+            await axios.post('https://stack-overflow-a2dm.onrender.com/question/getAns', { question: mainquestion })
                 .then(function (response) {
                     console.log(response);
                     setChatGPT(response.data);
@@ -196,7 +196,7 @@ const QuestionReplySection = () => {
 
     useEffect(() => {
         async function postcall() {
-            await axios.get(`http://localhost:4001/api/v1/posts/${postID}`)
+            await axios.get(`https://stack-overflow-a2dm.onrender.com/api/v1/posts/${postID}`)
                 .then((res) => {
 
                     console.log('details about this post ', res.data.data)
@@ -231,7 +231,7 @@ const QuestionReplySection = () => {
         postcall();
 
         function commentcall() {
-            axios.get(`http://localhost:4001/api/v1/posts/comment/${postID}`)
+            axios.get(`https://stack-overflow-a2dm.onrender.com/api/v1/posts/comment/${postID}`)
                 .then((res) => {
                     console.log('comments => ', res.data);
 

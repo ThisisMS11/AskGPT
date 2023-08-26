@@ -17,7 +17,7 @@ export const CommentProvider = ({ children }) => {
         }
 
         if (postID && commentID) {
-            await axios.delete(`http://localhost:4001/api/v1/posts/comment/${postID}/${commentID}`, config)
+            await axios.delete(`https://stack-overflow-a2dm.onrender.com/api/v1/posts/comment/${postID}/${commentID}`, config)
                 .then((res) => {
                     if (res.data.success) return true;
                 })

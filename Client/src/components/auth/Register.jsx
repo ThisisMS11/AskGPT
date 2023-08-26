@@ -62,7 +62,7 @@ const Register = () => {
       }
     };
 
-    await axios.post('http://localhost:4001/api/v1/user/register', ReqBodyDetails, config)
+    await axios.post('https://stack-overflow-a2dm.onrender.com/api/v1/user/register', ReqBodyDetails, config)
       .then((res) => {
         console.log("Regiteration Response : ", res);
         if (res.data.status) {
