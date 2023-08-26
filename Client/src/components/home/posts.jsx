@@ -11,7 +11,7 @@ const Posts = () => {
   useEffect(() => {
 
     async function call() {
-      await axios.get('http://localhost:4001/api/v1/all_posts/every')
+      await axios.get('https://stack-overflow-a2dm.onrender.com/api/v1/all_posts/every')
         .then((data) => {
           console.log(data.data)
           console.log('All posts :', data.data.posts);
