@@ -59,7 +59,7 @@ export default function QuestionPanelReview() {
                 }
             }
 
-            await axios.get('https://stack-overflow-a2dm.onrender.com/api/v1/all_posts/', config).then((res) => {
+            await axios.get('http://localhost:4001/api/v1/all_posts/', config).then((res) => {
                 if (res.data.success) {
                     setUserposts(res.data.posts)
                 }

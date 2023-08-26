@@ -52,7 +52,7 @@ const Header = () => {
 
         //! here we also need to make the api call to remove the cookie storing user info at server side.
 
-        await axios.get('https://stack-overflow-a2dm.onrender.com/api/v1/user/logout').then((response) => {
+        await axios.get('http://localhost:4001/api/v1/user/logout').then((response) => {
             console.log(response);
 
             if (response.data.status == 'success') {

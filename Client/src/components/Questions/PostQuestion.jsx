@@ -120,7 +120,7 @@ const PostQuestion = () => {
       }
     };
 
-    await axios.post('https://stack-overflow-a2dm.onrender.com/api/v1/posts/', postDetails, config)
+    await axios.post('http://localhost:4001/api/v1/posts/', postDetails, config)
       .then((res) => {
         console.log('post response => ', res)
         navigate('/');
